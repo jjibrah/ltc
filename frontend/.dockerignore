@@ -1,0 +1,12 @@
+.git
+node_modules
+dist
+dist-ssr
+.env
+.env.*
+!.env.example
+*.log
+*.pem
+*.key
+docs/visual
+*Zone.Identifier

@@ -1,0 +1,15 @@
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+backend/scripts/liveschema.json
+**/node_modules
+**/dist
+**/.venv
+.git
+frontend
+LTC-backend
+LTC-docs
+public
+infra/cdk.out
+**/docs/visual

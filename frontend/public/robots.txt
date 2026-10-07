@@ -1,0 +1,5 @@
+# Living The Charge
+User-agent: *
+Allow: /
+
+Sitemap: https://livingthecharge.org/sitemap.xml

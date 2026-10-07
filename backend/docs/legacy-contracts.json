@@ -1,0 +1,2333 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/admin/dashboard/",
+    "source": "LTC-backend/app/dashboard/router.py",
+    "router": "\n    prefix=\"/api/admin\",\n    tags=[\"Admin Dashboard\"],\n    dependencies=[Depends(require_permission(\"dashboard.view\"))],\n",
+    "contract": "@router.get(\"/dashboard/\")\ndef get_dashboard_summary(current_user=Depends(get_current_user)):\n    permissions = resolve_effective_permissions(current_user)\n    return service.get_summary(include_donations=\"donations.view\" in permissions)\n",
+    "sha256": "b3ca8ccd04d369fa5c54d11c903c2aef86f2b4c8c7dbba0e17557c4411df9491",
+    "permissions": [
+      "dashboard.view"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.dashboard",
+        "files": [
+          "frontend/src/services/dashboard/dashboard.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/donations",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "\n    prefix=\"/api/admin/donations\",\n    tags=[\"Donations (Admin)\"],\n",
+    "contract": "@admin_donations_router.get(\"\", dependencies=[Depends(require_permission(\"donations.view\"))])\ndef list_admin_donations(\n    limit: int = Query(default=100, ge=1, le=200),\n    offset: int = Query(default=0, ge=0),\n):\n    return service.list_admin_donations(limit=limit, offset=offset)\n\n\n",
+    "sha256": "3d22a068e3520935b0d8dc499ad064f9c32b6455eb196128f24861b8151781a1",
+    "permissions": [
+      "donations.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=100, ge=1, le=200"
+      },
+      {
+        "name": "offset",
+        "declaration": "default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.adminList",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/donations/manual",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "\n    prefix=\"/api/admin/donations\",\n    tags=[\"Donations (Admin)\"],\n",
+    "contract": "@admin_donations_router.post(\"/manual\", status_code=201)\ndef create_manual_donation(\n    payload: ManualDonationCreate,\n    request: Request,\n    super_admin: dict = Depends(require_super_admin),\n):\n    return service.create_manual_donation(payload, super_admin, getattr(request.state, \"request_id\", None))\n\n\n",
+    "sha256": "6ef4f70b2f010efc7149e162e0fee828e5f08da1233e6dfb1026dfc4ff56af25",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 201,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "ManualDonationCreate",
+        "source": "LTC-backend/app/donations/schemas.py",
+        "definition": "class ManualDonationCreate(BaseModel):\n    donor_name: str = Field(min_length=1, max_length=150)\n    donor_email: str = Field(min_length=3, max_length=320)\n    amount: Decimal = Field(gt=0, le=1000000, decimal_places=2)\n    frequency: Literal[\"one_time\", \"monthly\"] = \"one_time\"\n    donated_at: datetime\n    anonymous: bool = True\n    message: str | None = Field(default=None, max_length=2000)\n    manual_reference: str | None = Field(default=None, max_length=255)\n\n    @field_validator(\"donor_name\")\n    @classmethod\n    def normalize_name(cls, value: str) -> str:\n        value = \" \".join(value.split())\n        if not value:\n            raise ValueError(\"Donor name is required\")\n        return value\n\n    @field_validator(\"donor_email\")\n    @classmethod\n    def normalize_email(cls, value: str) -> str:\n        value = value.strip().lower()\n        if not re.fullmatch(r\"[^@\\s]+@[^@\\s]+\\.[^@\\s]+\", value):\n            raise ValueError(\"Enter a valid donor email address\")\n        return value\n\n    @field_validator(\"message\", \"manual_reference\")\n    @classmethod\n    def normalize_optional_text(cls, value: str | None) -> str | None:\n        if value is None:\n            return None\n        value = value.strip()\n        return value or None\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.manual",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/donations/pledges",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "\n    prefix=\"/api/admin/donations\",\n    tags=[\"Donations (Admin)\"],\n",
+    "contract": "@admin_donations_router.get(\"/pledges\", dependencies=[Depends(require_permission(\"pledges.view\"))])\ndef list_admin_pledges(limit: int = Query(default=100, ge=1, le=200), offset: int = Query(default=0, ge=0)):\n    return service.list_admin_pledges(limit=limit, offset=offset)\n\n\n",
+    "sha256": "6e9246f578cf47b241f76a221f14242738298cbdb71e591986cc34e3a600c35d",
+    "permissions": [
+      "pledges.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=100, ge=1, le=200), offset: int = Query(default=0, ge=0)"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.adminPledges",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/donations/pledges/{pledge_id}",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "\n    prefix=\"/api/admin/donations\",\n    tags=[\"Donations (Admin)\"],\n",
+    "contract": "@admin_donations_router.patch(\"/pledges/{pledge_id}\", dependencies=[Depends(require_permission(\"pledges.update\"))])\ndef update_pledge(pledge_id: str, payload: PledgeStatusUpdate, admin: dict = Depends(require_permission(\"pledges.update\"))):\n    return service.update_pledge_status(pledge_id, payload.status, str(admin.get(\"id\") or admin.get(\"auth_user_id\") or \"admin\"))\n\n\n",
+    "sha256": "bdd2c1debdf4a345df1a783209a2042a8cb24d8bd8dc56cf641edbea267c323a",
+    "permissions": [
+      "pledges.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "PledgeStatusUpdate",
+        "source": "LTC-backend/app/donations/schemas.py",
+        "definition": "class PledgeStatusUpdate(BaseModel):\n    status: Literal[\"pending\", \"approved\", \"fulfilled\", \"withdrawn\"]\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.adminPledge",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/mentors/applications",
+    "source": "LTC-backend/app/mentors/router.py",
+    "router": "\n    prefix=\"/api/admin/mentors\",\n    tags=[\"Mentors (Admin)\"],\n",
+    "contract": "@admin_router.get(\"/applications\", dependencies=[Depends(require_permission(\"mentors.view\"))])\ndef list_mentor_applications(\n    limit: int = Query(default=100, ge=1, le=200),\n    offset: int = Query(default=0, ge=0),\n):\n    return service.list_applications(limit=limit, offset=offset)\n\n\n",
+    "sha256": "f83d20cc5fc8c16fc1e50da66a4207b1545f757a442f13325418d2a730606c86",
+    "permissions": [
+      "mentors.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=100, ge=1, le=200"
+      },
+      {
+        "name": "offset",
+        "declaration": "default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminMentorApplications.list",
+        "files": [
+          "frontend/src/admin/api/adminServices.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/mentors/applications/{application_id}",
+    "source": "LTC-backend/app/mentors/router.py",
+    "router": "\n    prefix=\"/api/admin/mentors\",\n    tags=[\"Mentors (Admin)\"],\n",
+    "contract": "@admin_router.patch(\"/applications/{application_id}\", dependencies=[Depends(require_permission(\"mentors.update\"))])\ndef update_mentor_application_status(application_id: str, payload: MentorApplicationStatusUpdate):\n    return service.update_application_status(application_id, payload.status)\n",
+    "sha256": "29b276d736d4caffa8e42daf5369c4d856a357c3edc0467d0472f19bc0e4df68",
+    "permissions": [
+      "mentors.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "MentorApplicationStatusUpdate",
+        "source": "LTC-backend/app/mentors/schemas.py",
+        "definition": "class MentorApplicationStatusUpdate(BaseModel):\n    status: ApplicationStatus\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminMentorApplications.detail",
+        "files": [
+          "frontend/src/admin/api/adminServices.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/metrics",
+    "source": "LTC-backend/app/main.py",
+    "router": "",
+    "contract": "@app.get(\"/api/admin/metrics\", dependencies=[Depends(require_super_admin)])\ndef performance_metrics():\n    \"\"\"In-process percentile metrics for capacity decisions; never exposes payloads.\"\"\"\n    return metrics_snapshot()\n\n\n",
+    "sha256": "7a178422808d735d9781a7ade9dd3cc300020148b4b96f6d6973000fd56db44f",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/my-team-profile",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.get(\"/my-team-profile\")\ndef get_my_team_profile(current_user=Depends(get_current_user)):\n    return service.get_profile_for_email(current_user.get(\"email\", \"\"))\n\n\n",
+    "sha256": "763e51c734fc223b303137afbb1834eabf5390176a8e0618164fa5a851f41312",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.mine",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/my-team-profile",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.patch(\"/my-team-profile\")\nasync def update_my_team_profile(\n    name: str | None = Form(default=None),\n    email: str | None = Form(default=None),\n    role: str | None = Form(default=None),\n    department: str | None = Form(default=None),\n    quote: str | None = Form(default=None),\n    bio: str | None = Form(default=None),\n    image: UploadFile | None = File(default=None),\n    current_user=Depends(get_current_user),\n):\n    payload = UpdateProfileRequest(name=name, email=email, role=role, department=department, quote=quote, bio=bio)\n    image_bytes = await read_upload_limited(image, service.MAX_IMAGE_SIZE) if image else b\"\"\n    return await run_in_threadpool(\n        service.update_profile_for_email,\n        current_user,\n        payload.model_dump(exclude_none=True),\n        image,\n        image_bytes,\n    )\n\n\n",
+    "sha256": "ab742e1f4ce8020b9466153ee633945834dfc333fb52dcea7bd60403a1a8b52e",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "multipart/form-data",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.mine",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/my-team-profile",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.post(\"/my-team-profile\")\nasync def create_my_team_profile(\n    name: str | None = Form(default=None),\n    role: str | None = Form(default=None),\n    department: str | None = Form(default=None),\n    quote: str | None = Form(default=None),\n    bio: str | None = Form(default=None),\n    image: UploadFile | None = File(default=None),\n    current_user=Depends(get_current_user),\n):\n    payload = UpdateProfileRequest(name=name, role=role, department=department, quote=quote, bio=bio)\n    image_bytes = await read_upload_limited(image, service.MAX_IMAGE_SIZE) if image else b\"\"\n    return await run_in_threadpool(\n        service.create_profile_for_user,\n        current_user,\n        payload.model_dump(exclude_none=True),\n        image,\n        image_bytes,\n    )\n\n\n",
+    "sha256": "aa1631319f0d9bf1637fe8ec25b1404709226c4e3e92aa828b82cb9b7a1c7cfd",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "multipart/form-data",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.mine",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/newsletters/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.get(\"/\", dependencies=[Depends(require_permission(\"newsletters.view\"))])\ndef list_newsletters(\n    limit: int = Query(default=50, ge=1, le=200),\n    offset: int = Query(default=0, ge=0),\n):\n    return service.list_newsletters(limit=limit, offset=offset)\n\n\n",
+    "sha256": "c1760e7d594dce4a48a3a57ae4a71c17d3595db0f44042463084a1c4097cf3bd",
+    "permissions": [
+      "newsletters.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=50, ge=1, le=200"
+      },
+      {
+        "name": "offset",
+        "declaration": "default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.list",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/newsletters/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.post(\"/\", status_code=201)\ndef create_newsletter(payload: NewsletterCreate, admin=Depends(require_permission(\"newsletters.create\"))):\n    return service.create_newsletter(\n        payload.model_dump(exclude_none=True),\n        created_by=admin.get(\"id\"),\n    )\n\n\n",
+    "sha256": "97550d87c97af5a445275fbec57f256004ad4da610b9e77f2091bbf8f912856b",
+    "permissions": [
+      "newsletters.create"
+    ],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 201,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "NewsletterCreate",
+        "source": "LTC-backend/app/newsletters/schemas.py",
+        "definition": "class NewsletterCreate(BaseModel):\n    title: str = Field(default=\"\", max_length=500)\n    body_html: str = Field(default=\"\")\n    preview_text: Optional[str] = Field(default=None, max_length=255)\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.list",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/admin/newsletters/{newsletter_id}/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.delete(\"/{newsletter_id}/\", status_code=200, dependencies=[Depends(require_permission(\"newsletters.delete\"))])\ndef delete_newsletter(newsletter_id: str):\n    return service.delete_newsletter(newsletter_id)\n\n\n",
+    "sha256": "de7f3be36800364e189dd71711665e4e7b17f9afc302c8516eecf51585444c36",
+    "permissions": [
+      "newsletters.delete"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.detail",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/newsletters/{newsletter_id}/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.patch(\"/{newsletter_id}/\", dependencies=[Depends(require_permission(\"newsletters.update\"))])\ndef update_newsletter(newsletter_id: str, payload: NewsletterUpdate):\n    return service.update_newsletter(newsletter_id, payload.model_dump(exclude_none=True))\n\n\n",
+    "sha256": "faa773efe4104415d3b36a00ae6123212cd603c87575ee517b240c1f6f40895e",
+    "permissions": [
+      "newsletters.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "NewsletterUpdate",
+        "source": "LTC-backend/app/newsletters/schemas.py",
+        "definition": "class NewsletterUpdate(BaseModel):\n    title: Optional[str] = Field(default=None, max_length=500)\n    body_html: Optional[str] = None\n    preview_text: Optional[str] = Field(default=None, max_length=255)\n    status: Optional[Literal[\"draft\", \"cancelled\"]] = None\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.detail",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/newsletters/{newsletter_id}/attachments/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.post(\"/{newsletter_id}/attachments/\", status_code=201, dependencies=[Depends(require_permission(\"newsletters.update\"))])\nasync def add_attachment(newsletter_id: str, file: UploadFile = File(...)):\n    content = await read_upload_limited(file, service._MAX_ATTACHMENT_BYTES)\n    return await run_in_threadpool(service.add_attachment, newsletter_id, file, content)\n\n\n",
+    "sha256": "cdc3c0e7f7adaed748313d42d1e1a11a6e1a0e4988e8a3d4d5d503a7ee9ca8f8",
+    "permissions": [
+      "newsletters.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "multipart/form-data",
+    "successStatus": 201,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.attachments",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/admin/newsletters/{newsletter_id}/attachments/{attachment_id}/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.delete(\"/{newsletter_id}/attachments/{attachment_id}/\", status_code=200, dependencies=[Depends(require_permission(\"newsletters.update\"))])\ndef remove_attachment(newsletter_id: str, attachment_id: str):\n    return service.remove_attachment(newsletter_id, attachment_id)\n\n\n",
+    "sha256": "d401e7aa65845c58a0ced53811f657d5941058ce45122d7650ee612dee16b4d1",
+    "permissions": [
+      "newsletters.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.attachment",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/newsletters/{newsletter_id}/banner/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.post(\"/{newsletter_id}/banner/\", status_code=200, dependencies=[Depends(require_permission(\"newsletters.update\"))])\nasync def upload_banner(newsletter_id: str, banner: UploadFile = File(...)):\n    content = await read_upload_limited(banner, service._MAX_BANNER_BYTES)\n    return await run_in_threadpool(service.upload_banner, newsletter_id, banner, content)\n\n\n",
+    "sha256": "a03a64147115f46cdb88e193e3842d220e87632bad76b88d8b8affa096b7f6e7",
+    "permissions": [
+      "newsletters.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "multipart/form-data",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.banner",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/newsletters/{newsletter_id}/preview/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.get(\"/{newsletter_id}/preview/\", dependencies=[Depends(require_permission(\"newsletters.view\"))])\ndef preview_newsletter(newsletter_id: str):\n    html = service.preview_newsletter(newsletter_id)\n    return HTMLResponse(content=html, status_code=200)\n\n\n",
+    "sha256": "b6ca7281a42e500b947b9fe31be34dfd50430e2fdf6311b8dcec2bc1c89786cb",
+    "permissions": [
+      "newsletters.view"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.preview",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/newsletters/{newsletter_id}/send/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.post(\"/{newsletter_id}/send/\", status_code=202, dependencies=[Depends(require_permission(\"newsletters.send\"))])\ndef send_newsletter(newsletter_id: str, background_tasks: BackgroundTasks):\n    newsletter = service.initiate_send(newsletter_id)\n    background_tasks.add_task(service.do_send, newsletter_id)\n    return newsletter\n\n\n",
+    "sha256": "a4f55b837ac8e6304120c858d78fcc498fbfa01fbbeac5f6c6f8b44166139649",
+    "permissions": [
+      "newsletters.send"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 202,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.send",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/newsletters/{newsletter_id}/status/",
+    "source": "LTC-backend/app/newsletters/router.py",
+    "router": "\n    prefix=\"/api/admin/newsletters\",\n    tags=[\"Admin Newsletters\"],\n",
+    "contract": "@router.get(\"/{newsletter_id}/status/\", dependencies=[Depends(require_permission(\"newsletters.view\"))])\ndef get_status(newsletter_id: str):\n    return service.get_status(newsletter_id)\n",
+    "sha256": "8a540e9c91fc9953d8a33fecc3b32f65e2b7b27d720bf64967489499ac94b95e",
+    "permissions": [
+      "newsletters.view"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminNewsletters.status",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/permissions",
+    "source": "LTC-backend/app/permissions/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Permissions\"], dependencies=[Depends(require_super_admin)]",
+    "contract": "@router.get(\"/permissions\")\ndef permission_catalogue():\n    return service.list_permissions()\n\n\n",
+    "sha256": "b5f8aa66db1630c866aaf8b6ad112f6138484efc0ad309f56eb1567bfc24935b",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.permissions",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/profile-submission-links",
+    "source": "LTC-backend/app/profile/submission_router.py",
+    "router": "tags=[\"Profile Submission Links\"]",
+    "contract": "@router.get(\"/api/admin/profile-submission-links\", dependencies=[Depends(require_permission(\"profiles.view\"))])\ndef list_submission_links(limit: int = Query(default=100, ge=1, le=200), offset: int = Query(default=0, ge=0)):\n    return submission_service.list_submission_links(limit=limit, offset=offset)\n\n\n",
+    "sha256": "c162bd7f056095774f656a3821103191e0282585a5d51544d07c9acb061c84ba",
+    "permissions": [
+      "profiles.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=100, ge=1, le=200), offset: int = Query(default=0, ge=0)"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.profileSubmissionLinks.list",
+        "files": [
+          "frontend/src/services/profileSubmissionLinks/profileSubmissionLinks.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.profileSubmissionLinks.create",
+        "files": [
+          "frontend/src/services/profileSubmissionLinks/profileSubmissionLinks.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/profile-submission-links",
+    "source": "LTC-backend/app/profile/submission_router.py",
+    "router": "tags=[\"Profile Submission Links\"]",
+    "contract": "@router.post(\"/api/admin/profile-submission-links\", status_code=201)\ndef create_submission_link(payload: CreateSubmissionLinkRequest, current_user=Depends(require_permission(\"profiles.update\"))):\n    return submission_service.create_submission_link(current_user, payload.expires_in)\n\n\n",
+    "sha256": "1498c817d619f7d6f4a77e161e0569760e652734c915c67216168fad49a22575",
+    "permissions": [
+      "profiles.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 201,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "CreateSubmissionLinkRequest",
+        "source": "LTC-backend/app/profile/submission_schemas.py",
+        "definition": "class CreateSubmissionLinkRequest(BaseModel):\n    expires_in: str = Field(default=\"7d\", pattern=r\"^(15m|1h|24h|3d|7d)$\")\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.profileSubmissionLinks.list",
+        "files": [
+          "frontend/src/services/profileSubmissionLinks/profileSubmissionLinks.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.profileSubmissionLinks.create",
+        "files": [
+          "frontend/src/services/profileSubmissionLinks/profileSubmissionLinks.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/profile-submission-links/{link_id}/revoke",
+    "source": "LTC-backend/app/profile/submission_router.py",
+    "router": "tags=[\"Profile Submission Links\"]",
+    "contract": "@router.post(\"/api/admin/profile-submission-links/{link_id}/revoke\", dependencies=[Depends(require_permission(\"profiles.update\"))])\ndef revoke_submission_link(link_id: str):\n    return submission_service.revoke_submission_link(link_id)\n\n\n",
+    "sha256": "c2f94b7a74b021a1a64b1aa1422578be2f1a82f35c7b637864f21c4d28f25078",
+    "permissions": [
+      "profiles.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.profileSubmissionLinks.revoke",
+        "files": [
+          "frontend/src/services/profileSubmissionLinks/profileSubmissionLinks.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/role-permissions",
+    "source": "LTC-backend/app/permissions/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Permissions\"], dependencies=[Depends(require_super_admin)]",
+    "contract": "@router.get(\"/role-permissions\")\ndef role_permissions():\n    return service.list_role_permissions()\n\n\n",
+    "sha256": "f3436450e7025ecb81831d049060be724d1ee200bf025783fb6d76ff746a401c",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.rolePermissions",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PUT",
+    "path": "/api/admin/roles/{role}/permissions",
+    "source": "LTC-backend/app/permissions/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Permissions\"], dependencies=[Depends(require_super_admin)]",
+    "contract": "@router.put(\"/roles/{role}/permissions\")\ndef update_role_permissions(role: str, payload: RolePermissionsUpdate, request: Request, actor=Depends(require_super_admin)):\n    return service.replace_role_permissions(\n        actor,\n        role,\n        payload.permissions,\n        payload.reason,\n        getattr(request.state, \"request_id\", None),\n    )\n\n\n",
+    "sha256": "d6e972ef60f94d09a53e59d150c758d185784a11e095f2952bc0a118ea6483a5",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "RolePermissionsUpdate",
+        "source": "LTC-backend/app/permissions/schemas.py",
+        "definition": "class RolePermissionsUpdate(BaseModel):\n    permissions: list[str] = Field(default_factory=list, max_length=100)\n    reason: str = Field(min_length=3, max_length=1000)\n\n    @field_validator(\"permissions\")\n    @classmethod\n    def unique_permission_codes(cls, values: list[str]) -> list[str]:\n        if any(not re.fullmatch(r\"[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\", value) for value in values):\n            raise ValueError(\"Permission codes must use module.action format\")\n        return sorted(set(values))\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.rolePermissionDetail",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/stories",
+    "source": "LTC-backend/app/stories/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Stories\"]",
+    "contract": "@admin_router.get(\"/stories\", dependencies=[Depends(require_permission(\"stories.view\"))])\ndef list_admin_stories(\n    limit: int = Query(default=50, ge=1, le=200), offset: int = Query(default=0, ge=0)\n):\n    return service.list_admin_stories(limit=limit, offset=offset)\n\n\n",
+    "sha256": "260abc7ef2b1fe3ae9167d1f39c682331f08279334b5a219c83475b0fb5402d7",
+    "permissions": [
+      "stories.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=50, ge=1, le=200), offset: int = Query(default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminStories.list",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/stories/StoriesPage.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/stories",
+    "source": "LTC-backend/app/stories/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Stories\"]",
+    "contract": "@admin_router.post(\"/stories\")\nasync def create_story(\n    admin: dict = Depends(require_permission(\"stories.create\")),\n    name: str = Form(...),\n    excerpt: str | None = Form(default=None),\n    content: str = Form(...),\n    order: str | None = Form(default=\"0\"),\n    is_published: str | None = Form(default=\"false\"),\n    photo: UploadFile | None = File(default=None),\n):\n    try:\n        order_int = int(order) if order else 0\n    except ValueError:\n        order_int = 0\n    \n    is_published_bool = str(is_published).lower() in (\"true\", \"1\", \"t\", \"yes\") if is_published else False\n    if is_published_bool and \"stories.publish\" not in resolve_effective_permissions(admin):\n        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=\"Publishing permission required\")\n\n    payload = StoryRequest(\n        name=name,\n        excerpt=excerpt,\n        content=content,\n        order=order_int,\n        is_published=is_published_bool\n    )\n    image_bytes = await read_upload_limited(photo, service.MAX_IMAGE_SIZE) if photo else b\"\"\n    return await run_in_threadpool(service.create_story, admin, payload.model_dump(), photo, image_bytes)\n\n\n",
+    "sha256": "4a1b59562db99a5a167a22dd054f7e20bcf690c643650a5623b4f1a43faf86a9",
+    "permissions": [
+      "stories.create"
+    ],
+    "queryDeclarations": [],
+    "contentType": "multipart/form-data",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminStories.list",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/stories/StoriesPage.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/admin/stories/{story_id}",
+    "source": "LTC-backend/app/stories/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Stories\"]",
+    "contract": "@admin_router.delete(\"/stories/{story_id}\", dependencies=[Depends(require_permission(\"stories.delete\"))])\ndef delete_story(story_id: str):\n    return service.delete_story(story_id)\n",
+    "sha256": "bccb36c8ea0ed2663d17b9e647cedf484528f218348a310cd718324e8d8a9f76",
+    "permissions": [
+      "stories.delete"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminStories.detail",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/stories/StoriesPage.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/stories/{story_id}",
+    "source": "LTC-backend/app/stories/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Stories\"]",
+    "contract": "@admin_router.patch(\"/stories/{story_id}\")\nasync def update_story(\n    story_id: str,\n    admin: dict = Depends(require_permission(\"stories.update\")),\n    name: str | None = Form(default=None),\n    excerpt: str | None = Form(default=None),\n    content: str | None = Form(default=None),\n    order: str | None = Form(default=None),\n    is_published: str | None = Form(default=None),\n    photo: UploadFile | None = File(default=None),\n):\n    values = {}\n    if name is not None: values[\"name\"] = name\n    if excerpt is not None: values[\"excerpt\"] = excerpt\n    if content is not None: values[\"content\"] = content\n    if order is not None:\n        try:\n            values[\"order\"] = int(order)\n        except ValueError:\n            values[\"order\"] = 0\n    if is_published is not None:\n        values[\"is_published\"] = str(is_published).lower() in (\"true\", \"1\", \"t\", \"yes\")\n        if \"stories.publish\" not in resolve_effective_permissions(admin):\n            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=\"Publishing permission required\")\n        \n    payload = StoryUpdateRequest(**values)\n    image_bytes = await read_upload_limited(photo, service.MAX_IMAGE_SIZE) if photo else b\"\"\n    return await run_in_threadpool(\n        service.update_story, story_id, payload.model_dump(exclude_unset=True), photo, image_bytes\n    )\n\n\n",
+    "sha256": "8854e2dbc83a25df1f7a5d9c603eab4ffac587bcffcd6ff7d9635eda5232d789",
+    "permissions": [
+      "stories.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "multipart/form-data",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminStories.detail",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/stories/StoriesPage.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/subscribers/",
+    "source": "LTC-backend/app/subscribers/router.py",
+    "router": "\n    prefix=\"/api/admin/subscribers\",\n    tags=[\"Admin Subscribers\"],\n    dependencies=[Depends(require_admin)],\n",
+    "contract": "@admin_router.get(\"/\", status_code=200)\ndef list_subscribers(\n    status_filter: str | None = Query(default=None, alias=\"status\"),\n    search: str | None = Query(default=None, max_length=100),\n    limit: int = Query(default=100, ge=1, le=100),\n    offset: int = Query(default=0, ge=0),\n):\n    return service.list_subscribers(status_filter, search, limit, offset)\n\n\n",
+    "sha256": "fdceb024801277d3185c315f929d12cd5c862994ea872d89d0b3cf6c5f50501f",
+    "permissions": [],
+    "queryDeclarations": [
+      {
+        "name": "status_filter",
+        "declaration": "default=None, alias=\"status\""
+      },
+      {
+        "name": "search",
+        "declaration": "default=None, max_length=100"
+      },
+      {
+        "name": "limit",
+        "declaration": "default=100, ge=1, le=100"
+      },
+      {
+        "name": "offset",
+        "declaration": "default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/admin/subscribers/{subscriber_id}/",
+    "source": "LTC-backend/app/subscribers/router.py",
+    "router": "\n    prefix=\"/api/admin/subscribers\",\n    tags=[\"Admin Subscribers\"],\n    dependencies=[Depends(require_admin)],\n",
+    "contract": "@admin_router.delete(\"/{subscriber_id}/\", status_code=200)\ndef delete_subscriber(subscriber_id: str):\n    return service.delete_subscriber(subscriber_id)\n",
+    "sha256": "79f2bd3b7340caa6e66dbdf946bdd24c41409c8f92babd710f392b71de5e4830",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/subscribers/{subscriber_id}/",
+    "source": "LTC-backend/app/subscribers/router.py",
+    "router": "\n    prefix=\"/api/admin/subscribers\",\n    tags=[\"Admin Subscribers\"],\n    dependencies=[Depends(require_admin)],\n",
+    "contract": "@admin_router.patch(\"/{subscriber_id}/\", status_code=200)\ndef update_subscriber(subscriber_id: str, payload: SubscriberUpdate):\n    return service.update_subscriber(subscriber_id, payload.model_dump(exclude_none=True))\n\n\n",
+    "sha256": "c2aec8558fd2c0d532043e4424e252a330977f56a3ed3b48d184efac01a9862c",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "SubscriberUpdate",
+        "source": "LTC-backend/app/subscribers/schemas.py",
+        "definition": "class SubscriberUpdate(BaseModel):\n    status: Optional[Literal[\"subscribed\", \"unsubscribed\", \"bounced\"]] = None\n"
+      }
+    ],
+    "frontendCallers": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/subscribers/count/",
+    "source": "LTC-backend/app/subscribers/router.py",
+    "router": "\n    prefix=\"/api/admin/subscribers\",\n    tags=[\"Admin Subscribers\"],\n    dependencies=[Depends(require_admin)],\n",
+    "contract": "@admin_router.get(\"/count/\", status_code=200)\ndef subscriber_count():\n    return service.get_count()\n\n\n",
+    "sha256": "f2184112f16ab4f260c35595a464800852c042b67f28b1bed1397ced1bda5fba",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.subscriberCount",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/team-profiles",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.get(\"/team-profiles\", dependencies=[Depends(require_permission(\"profiles.view\"))])\ndef list_admin_profiles(limit: int = Query(default=100, ge=1, le=200), offset: int = Query(default=0, ge=0)):\n    return service.list_admin_profiles(limit=limit, offset=offset)\n\n\n",
+    "sha256": "bbb3e5980664a4c4e8d7348f596323ff482682ac91e3656834b75a6d98a1d999",
+    "permissions": [
+      "profiles.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=100, ge=1, le=200), offset: int = Query(default=0, ge=0)"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.list",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/admin/team-profiles/{profile_id}",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.delete(\"/team-profiles/{profile_id}\", dependencies=[Depends(require_permission(\"profiles.delete\"))])\ndef delete_profile(profile_id: str):\n    return service.delete_profile(profile_id)\n\n\n",
+    "sha256": "c4a47d8651ed8c9e29806990dc075c42605407500409c897ce67140cf6d3b22f",
+    "permissions": [
+      "profiles.delete"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.detail",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/team-profiles/{profile_id}",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.get(\"/team-profiles/{profile_id}\", dependencies=[Depends(require_permission(\"profiles.view\"))])\ndef get_admin_profile(profile_id: str):\n    return service.get_admin_profile(profile_id)\n\n\n",
+    "sha256": "2de7a25c2ede4795a34402ee10332705398b7ec82f464b68f45fe5fb0f76cd57",
+    "permissions": [
+      "profiles.view"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.detail",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/team-profiles/{profile_id}",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.patch(\"/team-profiles/{profile_id}\", dependencies=[Depends(require_permission(\"profiles.update\"))])\nasync def update_profile(\n    profile_id: str,\n    name: str | None = Form(default=None),\n    email: str | None = Form(default=None),\n    role: str | None = Form(default=None),\n    department: str | None = Form(default=None),\n    quote: str | None = Form(default=None),\n    bio: str | None = Form(default=None),\n    image: UploadFile | None = File(default=None),\n):\n    payload = UpdateProfileRequest(name=name, email=email, role=role, department=department, quote=quote, bio=bio)\n    image_bytes = await read_upload_limited(image, service.MAX_IMAGE_SIZE) if image else b\"\"\n    return await run_in_threadpool(\n        service.update_profile,\n        profile_id,\n        payload.model_dump(exclude_none=True),\n        image,\n        image_bytes,\n        None,\n    )\n\n\n",
+    "sha256": "b6e4911960a07a5085fd42dac12619991fabed287b71bf94e8619c873a191993",
+    "permissions": [
+      "profiles.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "multipart/form-data",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.detail",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/team-profiles/{profile_id}/publish",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.post(\"/team-profiles/{profile_id}/publish\", dependencies=[Depends(require_permission(\"profiles.publish\"))])\ndef publish_profile(profile_id: str):\n    return service.set_profile_status(profile_id, \"published\")\n\n\n",
+    "sha256": "010badb079419accac068003749b3aed5944df8ffaf91a3f395a3ae26b860bf3",
+    "permissions": [
+      "profiles.publish"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.action",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/team-profiles/{profile_id}/reject",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.post(\"/team-profiles/{profile_id}/reject\", dependencies=[Depends(require_permission(\"profiles.update\"))])\ndef reject_profile(profile_id: str):\n    return service.set_profile_status(profile_id, \"rejected\")\n\n\n",
+    "sha256": "f4495302b63c4b14e1bd799ed44cc84b50b05d75053d2b3dca32a49933b6a6ad",
+    "permissions": [
+      "profiles.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.action",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/team-profiles/{profile_id}/request-changes",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.post(\"/team-profiles/{profile_id}/request-changes\", dependencies=[Depends(require_permission(\"profiles.update\"))])\ndef request_profile_changes(profile_id: str):\n    return service.set_profile_status(profile_id, \"changes_requested\")\n",
+    "sha256": "f116de19fd63802b38c87cb8594921d6b1a26a3457a4263ef276e5f8fac473ca",
+    "permissions": [
+      "profiles.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.action",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/team-profiles/{profile_id}/unpublish",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.post(\"/team-profiles/{profile_id}/unpublish\", dependencies=[Depends(require_permission(\"profiles.publish\"))])\ndef unpublish_profile(profile_id: str):\n    return service.set_profile_status(profile_id, \"pending\")\n\n\n",
+    "sha256": "f3eff9206bd0109d152fdc38d7bb947b89be4d24a81b9cf2520f5c36d70cc586",
+    "permissions": [
+      "profiles.publish"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.action",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/team-profiles/reorder",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Team Profiles\"]",
+    "contract": "@admin_router.post(\"/team-profiles/reorder\", dependencies=[Depends(require_permission(\"profiles.update\"))])\ndef reorder_profiles(payload: ReorderProfilesRequest):\n    return service.reorder_profiles(payload.profile_ids)\n\n\n",
+    "sha256": "25f7eb9dcf207032f508bd04052d79161caffe6afa09f56ccd56eccd0c099af0",
+    "permissions": [
+      "profiles.update"
+    ],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "ReorderProfilesRequest",
+        "source": "LTC-backend/app/profile/schemas.py",
+        "definition": "class ReorderProfilesRequest(BaseModel):\n    profile_ids: list[str] = Field(min_length=1, max_length=200)\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminTeamProfiles.detail",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.adminTeamProfiles.reorder",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/user-authorizations",
+    "source": "LTC-backend/app/permissions/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Permissions\"], dependencies=[Depends(require_super_admin)]",
+    "contract": "@router.get(\"/user-authorizations\")\ndef user_authorization_matrix():\n    return service.list_user_authorizations()\n\n\n",
+    "sha256": "bfbe172658c15002cda8c70d5cc482018947401de5319aef3a5a772a0f9dcfad",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.userAuthorizations",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/users",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.get(\"\", dependencies=[Depends(require_permission(\"users.view\"))])\ndef list_users(\n    status_filter: str | None = Query(default=None, alias=\"status\"),\n    search: str | None = Query(default=None, max_length=100),\n    limit: int = Query(default=100, ge=1, le=100),\n    offset: int = Query(default=0, ge=0),\n):\n    return service.get_all_users(status_filter, search, limit, offset)\n\n\n",
+    "sha256": "21c111bdb9b5d02a58615506891d783274decca71cf517809e64aaa84f5f4ebb",
+    "permissions": [
+      "users.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "status_filter",
+        "declaration": "default=None, alias=\"status\""
+      },
+      {
+        "name": "search",
+        "declaration": "default=None, max_length=100"
+      },
+      {
+        "name": "limit",
+        "declaration": "default=100, ge=1, le=100"
+      },
+      {
+        "name": "offset",
+        "declaration": "default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.list",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/admin/users/{user_id}",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.delete(\"/{user_id}\")\ndef delete_user(user_id: str, payload: DeleteUserRequest, request: Request, current_user: dict = Depends(require_super_admin)):\n    return service.delete_user(\n        current_user,\n        user_id,\n        payload.reason,\n        getattr(request.state, \"request_id\", None),\n    )\n",
+    "sha256": "56e88928f839ce12973265b6dd0c760085f20a4cb3c87e5c767a2e7d31d8d39c",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "DeleteUserRequest",
+        "source": "LTC-backend/app/users/schemas.py",
+        "definition": "class DeleteUserRequest(BaseModel):\n    reason: str = Field(min_length=3, max_length=1000)\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.detail",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.adminUsers.delete",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/users/{user_id}",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.get(\"/{user_id}\", dependencies=[Depends(require_permission(\"users.view\"))])\ndef get_user(user_id: str):\n    return service.get_user(user_id)\n\n\n",
+    "sha256": "2c3069c80acc3483e158bfca4e90a5d8d34a1cefd377b047cfd7bdabe123a932",
+    "permissions": [
+      "users.view"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.detail",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.adminUsers.delete",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/users/{user_id}",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.patch(\"/{user_id}\")\ndef update_user(user_id: str, payload: UpdateUserRequest, current_user: dict = Depends(require_super_admin)):\n    return service.update_user(current_user, user_id, payload.model_dump(exclude_none=True))\n\n\n",
+    "sha256": "547c1389c4fd88c11708eefb9cdd0a3a8208328c9d6cce6a1fe89fbfd1080476",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "UpdateUserRequest",
+        "source": "LTC-backend/app/users/schemas.py",
+        "definition": "class UpdateUserRequest(BaseModel):\n    name: str | None = Field(default=None, min_length=1, max_length=255)\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.detail",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.adminUsers.delete",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/users/{user_id}/disable",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.post(\"/{user_id}/disable\")\ndef disable_user(user_id: str, request: Request, current_user: dict = Depends(require_super_admin)):\n    return permissions_service.set_status(current_user, user_id, \"disabled\", \"Account disabled\", getattr(request.state, \"request_id\", None))\n\n\n",
+    "sha256": "82c031e5b47b328437e80aaf0f45f4c092671da8632fda3077a9f6be4dbb42c7",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.disable",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/users/{user_id}/enable",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.post(\"/{user_id}/enable\")\ndef enable_user(user_id: str, request: Request, current_user: dict = Depends(require_super_admin)):\n    return permissions_service.set_status(current_user, user_id, \"active\", \"Account enabled\", getattr(request.state, \"request_id\", None))\n\n\n",
+    "sha256": "15b101741673b5ccc82ecc226a8e7936bde00dafed0305b024a0fa944f5e2244",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.enable",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/users/{user_id}/invitation/resend",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.post(\"/{user_id}/invitation/resend\")\ndef resend_invitation(user_id: str, request: Request, current_user: dict = Depends(require_super_admin)):\n    rate_limit(request, \"invitation-resend\", limit=5, window_seconds=3600, discriminator=user_id)\n    return service.resend_invitation(current_user, user_id, getattr(request.state, \"request_id\", None))\n\n\n",
+    "sha256": "46e8b450de2201d085decba9e7cdc845e3a35a35f415591879d2d0413a7fb83f",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.resendInvitation",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/users/{user_id}/invitation/revoke",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.post(\"/{user_id}/invitation/revoke\")\ndef revoke_invitation(user_id: str, payload: InvitationRevokeRequest, request: Request, current_user: dict = Depends(require_super_admin)):\n    return service.revoke_invitation(current_user, user_id, payload.reason, getattr(request.state, \"request_id\", None))\n\n\n",
+    "sha256": "151829b0e31e532274cc3e0b8fb2e0da5eef55b90c8b98989c9c7eb36ea49301",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "InvitationRevokeRequest",
+        "source": "LTC-backend/app/users/schemas.py",
+        "definition": "class InvitationRevokeRequest(BaseModel):\n    reason: str = Field(min_length=3, max_length=1000)\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.revokeInvitation",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/users/{user_id}/permissions",
+    "source": "LTC-backend/app/permissions/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Permissions\"], dependencies=[Depends(require_super_admin)]",
+    "contract": "@router.get(\"/users/{user_id}/permissions\")\ndef user_permissions(user_id: str):\n    return service.get_user_authorization(user_id)\n\n\n",
+    "sha256": "a6af565216a9160f0b4e74c8e55efc4355d7a08e363b9e3428e42130ab3e0961",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.permissions",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PUT",
+    "path": "/api/admin/users/{user_id}/permissions",
+    "source": "LTC-backend/app/permissions/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Permissions\"], dependencies=[Depends(require_super_admin)]",
+    "contract": "@router.put(\"/users/{user_id}/permissions\")\ndef update_user_permissions(user_id: str, payload: PermissionOverridesUpdate, request: Request, actor=Depends(require_super_admin)):\n    return service.replace_overrides(actor, user_id, payload.grants, payload.denies, payload.reason, getattr(request.state, \"request_id\", None))\n\n\n",
+    "sha256": "9ed03b224ea790cfb5c42429abdfd7f87f00d96f287890db7eb4738ea2b00492",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "PermissionOverridesUpdate",
+        "source": "LTC-backend/app/permissions/schemas.py",
+        "definition": "class PermissionOverridesUpdate(BaseModel):\n    grants: list[str] = Field(default_factory=list, max_length=100)\n    denies: list[str] = Field(default_factory=list, max_length=100)\n    reason: str = Field(min_length=3, max_length=1000)\n\n    @field_validator(\"grants\", \"denies\")\n    @classmethod\n    def unique_codes(cls, values: list[str]) -> list[str]:\n        if any(not re.fullmatch(r\"[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\", value) for value in values):\n            raise ValueError(\"Permission codes must use module.action format\")\n        return sorted(set(values))\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.permissions",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/users/{user_id}/permissions/reset",
+    "source": "LTC-backend/app/permissions/router.py",
+    "router": "prefix=\"/api/admin\", tags=[\"Permissions\"], dependencies=[Depends(require_super_admin)]",
+    "contract": "@router.post(\"/users/{user_id}/permissions/reset\")\ndef reset_user_permissions(user_id: str, payload: ResetPermissionsRequest, request: Request, actor=Depends(require_super_admin)):\n    return service.replace_overrides(actor, user_id, [], [], payload.reason, getattr(request.state, \"request_id\", None))\n",
+    "sha256": "4412914e452a77750200c971d37a32d88b4b23f9a8067640287eea673077a198",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "ResetPermissionsRequest",
+        "source": "LTC-backend/app/permissions/schemas.py",
+        "definition": "class ResetPermissionsRequest(BaseModel):\n    reason: str = Field(min_length=3, max_length=1000)\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.resetPermissions",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/users/{user_id}/regenerate-password",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.post(\"/{user_id}/regenerate-password\")\ndef regenerate_password(user_id: str, current_user: dict = Depends(require_super_admin)):\n    return service.regenerate_password(current_user, user_id)\n\n\n",
+    "sha256": "1bf1da05134fa925028c05cb60aff29ba039a2d05f9857b4c3e2b1aeaa67463c",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.regeneratePassword",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/users/{user_id}/role",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.patch(\"/{user_id}/role\")\ndef change_role(user_id: str, payload: RoleUpdate, request: Request, current_user: dict = Depends(require_super_admin)):\n    return permissions_service.set_role(current_user, user_id, payload.role, payload.reason, getattr(request.state, \"request_id\", None))\n\n\n",
+    "sha256": "f0e44d285f13ee713b5bbb7aaa1f563335fcb284e207e66bc3828b25ed250cf9",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "RoleUpdate",
+        "status": "source declaration unresolved"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.role",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/admin/users/{user_id}/status",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.patch(\"/{user_id}/status\")\ndef change_status(user_id: str, payload: StatusUpdate, request: Request, current_user: dict = Depends(require_super_admin)):\n    return permissions_service.set_status(current_user, user_id, payload.status, payload.reason, getattr(request.state, \"request_id\", None))\n\n\n",
+    "sha256": "9ea46930021d44e171d0ff690fabb2472d130da59249673ea823a7ee32971e39",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "StatusUpdate",
+        "status": "source declaration unresolved"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.status",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/users/invitations",
+    "source": "LTC-backend/app/users/router.py",
+    "router": "\n    prefix=\"/api/admin/users\",\n    tags=[\"Admin Users\"],\n",
+    "contract": "@router.post(\"/invitations\", status_code=201)\ndef invite_user(payload: InvitationRequest, request: Request, current_user: dict = Depends(require_super_admin)):\n    return service.invite_user(\n        current_user,\n        payload.email,\n        payload.name.strip(),\n        payload.role,\n        getattr(request.state, \"request_id\", None),\n    )\n\n\n",
+    "sha256": "1d1b1715b0b118242e6dab2faab8f783899c7e844271cb94dcfdb232d681e3fb",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 201,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "InvitationRequest",
+        "source": "LTC-backend/app/users/schemas.py",
+        "definition": "class InvitationRequest(BaseModel):\n    email: str\n    name: str = Field(min_length=1, max_length=255)\n    role: Literal[\"super_admin\", \"admin\", \"staff\", \"viewer\"] = \"staff\"\n\n    @field_validator(\"email\")\n    @classmethod\n    def normalize_email(cls, value: str) -> str:\n        value = value.strip().lower()\n        if not re.fullmatch(r\"[^@\\s]+@[^@\\s]+\\.[^@\\s]+\", value):\n            raise ValueError(\"Enter a valid email address\")\n        return value\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.adminUsers.detail",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.adminUsers.invitations",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.adminUsers.delete",
+        "files": [
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/audit",
+    "source": "LTC-backend/app/audit/router.py",
+    "router": "prefix=\"/api/audit\", tags=[\"Audit\"], dependencies=[Depends(require_permission(\"audit.view\"))]",
+    "contract": "@router.get(\"\")\ndef list_audit_events(limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0), actor_id: str | None = None, target_id: str | None = None, action: str | None = None, entity_type: str | None = None, sensitive_only: bool = False, date_from: date | None = None, date_to: date | None = None):\n    return service.list_events(limit=limit, offset=offset, actor_id=actor_id, target_id=target_id, action=action, entity_type=entity_type, sensitive_only=sensitive_only, date_from=date_from, date_to=date_to)\n\n\n",
+    "sha256": "ca5fe509665e63dc50598588a990b0eb63470be0a325b7dbe3bcdee03a13fb5c",
+    "permissions": [
+      "audit.view"
+    ],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "50, ge=1, le=200), offset: int = Query(0, ge=0), actor_id: str | None = None, target_id: str | None = None, action: str | None = None, entity_type: str | None = None, sensitive_only: bool = False, date_from: date | None = None, date_to: date | None = None"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.audit.list",
+        "files": [
+          "frontend/src/services/audit/audit.service.js",
+          "frontend/src/services/users/users.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/audit/{event_id}",
+    "source": "LTC-backend/app/audit/router.py",
+    "router": "prefix=\"/api/audit\", tags=[\"Audit\"], dependencies=[Depends(require_permission(\"audit.view\"))]",
+    "contract": "@router.get(\"/{event_id}\")\ndef get_audit_event(event_id: str):\n    return service.get_event(event_id)\n",
+    "sha256": "ac9fdcdf21044562e01f1cebb840c4dc2eeeeeaf29105a0fb05f46287d7d249c",
+    "permissions": [
+      "audit.view"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.audit.detail",
+        "files": [
+          "frontend/src/services/audit/audit.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/audit/summary",
+    "source": "LTC-backend/app/audit/router.py",
+    "router": "prefix=\"/api/audit\", tags=[\"Audit\"], dependencies=[Depends(require_permission(\"audit.view\"))]",
+    "contract": "@router.get(\"/summary\")\ndef audit_summary():\n    return service.get_summary()\n\n\n",
+    "sha256": "8f6709c7d988f984974d63378bb1723237c2f11a52831b87a94b104e34097e40",
+    "permissions": [
+      "audit.view"
+    ],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.audit.summary",
+        "files": [
+          "frontend/src/services/audit/audit.service.js"
+        ]
+      },
+      {
+        "selector": "endpoints.audit.detail",
+        "files": [
+          "frontend/src/services/audit/audit.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/change-password",
+    "source": "LTC-backend/app/auth/router.py",
+    "router": "\n    prefix=\"/api/auth\",\n    tags=[\"Auth\"]\n",
+    "contract": "@router.post(\"/change-password\")\ndef change_password(request: Request, payload: ChangePasswordRequest, user=Depends(get_current_user)):\n    _password_policy(payload.new_password)\n    try:\n        auth_user_id = str(user[\"auth_user_id\"])\n        client = _auth_client()\n        row = supabase.table(\"application_users\").select(\"email\").eq(\"auth_user_id\", auth_user_id).limit(1).execute()\n        email = row.data[0][\"email\"]\n        client.auth.sign_in_with_password({\"email\": email, \"password\": payload.current_password})\n        client.auth.update_user({\"password\": payload.new_password})\n        _audit_auth(action=\"PASSWORD_CHANGED\", request=request, actor_user_id=str(user[\"id\"]), target_user_id=str(user[\"id\"]), reason=\"Authenticated user changed password\", after_state={\"password_changed\": True})\n        return {\"message\": \"Password changed successfully.\"}\n    except Exception:\n        _audit_auth(action=\"PASSWORD_CHANGE_FAILED\", request=request, actor_user_id=str(user.get(\"id\")), target_user_id=str(user.get(\"id\")), reason=\"Password change failed\", after_state={\"password_changed\": False})\n        raise HTTPException(status_code=400, detail=\"Current password is incorrect or the new password is invalid\")\n\n\n",
+    "sha256": "1ebf062d49d3cdb6983570a86e9da56223418ddee4d01ebd7ccdb738f69e3f63",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 400,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "ChangePasswordRequest",
+        "source": "LTC-backend/app/auth/router.py",
+        "definition": "class ChangePasswordRequest(BaseModel):\n    current_password: str = Field(min_length=1, max_length=128)\n    new_password: str = Field(min_length=8, max_length=128)\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.auth.changePassword",
+        "files": [
+          "frontend/src/services/auth/auth.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/forgot-password",
+    "source": "LTC-backend/app/auth/router.py",
+    "router": "\n    prefix=\"/api/auth\",\n    tags=[\"Auth\"]\n",
+    "contract": "@router.post(\"/forgot-password\")\ndef forgot_password(request: Request, payload: ForgotPasswordRequest):\n    rate_limit(request, \"auth-forgot-password\", limit=3, window_seconds=900, discriminator=payload.email)\n    # Supabase sends the recovery email. Always return the same response so\n    # callers cannot enumerate application accounts.\n    try:\n        _auth_client().auth.reset_password_for_email(\n            payload.email,\n            {\"redirect_to\": settings.auth_redirect_url},\n        )\n    except Exception:\n        pass\n    _audit_auth(action=\"PASSWORD_RESET_REQUESTED\", request=request, reason=\"Password reset flow requested\", after_state={\"result\": \"processed\"})\n    return {\"message\": \"If an account with that email exists, a reset link has been sent.\"}\n\n\n",
+    "sha256": "80f3aef969d09cef4b4fae78062df63c6532a270134dac98df9788b0ff647ec8",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "ForgotPasswordRequest",
+        "source": "LTC-backend/app/auth/router.py",
+        "definition": "class ForgotPasswordRequest(BaseModel):\n    email: str\n\n    @field_validator(\"email\")\n    @classmethod\n    def normalize_email(cls, value: str) -> str:\n        return Credentials.normalize_email(value)\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.auth.forgotPassword",
+        "files": [
+          "frontend/src/auth/forgot-password/ForgotPasswordPage.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "source": "LTC-backend/app/auth/router.py",
+    "router": "\n    prefix=\"/api/auth\",\n    tags=[\"Auth\"]\n",
+    "contract": "@router.post(\"/login\")\ndef login(request: Request, payload: Credentials):\n    rate_limit(request, \"auth-login\", limit=10, window_seconds=300, discriminator=payload.email)\n    _password_policy(payload.password)\n    try:\n        result = _auth_client().auth.sign_in_with_password({\"email\": payload.email, \"password\": payload.password})\n        session = _session_response(result)\n        app_user = session.get(\"user\") or {}\n        _audit_auth(action=\"LOGIN_SUCCESS\", request=request, actor_user_id=app_user.get(\"id\"), target_user_id=app_user.get(\"id\"), reason=\"Password authentication succeeded\", after_state={\"email\": app_user.get(\"email\")})\n        return session\n    except HTTPException:\n        _audit_auth(action=\"LOGIN_DENIED\", request=request, reason=\"Authentication denied\", after_state={\"email_domain\": payload.email.rsplit(\"@\", 1)[-1] if \"@\" in payload.email else None})\n        raise\n    except Exception:\n        _audit_auth(action=\"LOGIN_FAILED\", request=request, reason=\"Invalid credentials\", after_state={\"email_domain\": payload.email.rsplit(\"@\", 1)[-1] if \"@\" in payload.email else None})\n        raise HTTPException(status_code=401, detail=\"Invalid email or password\")\n\n\n",
+    "sha256": "ae42dd5c9b678387e92a0983fe8c55eb6eb255af3cad1223f782aec9ffc13e0b",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 401,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "Credentials",
+        "source": "LTC-backend/app/auth/router.py",
+        "definition": "class Credentials(BaseModel):\n    email: str\n    password: str = Field(min_length=8, max_length=128)\n\n    @field_validator(\"email\")\n    @classmethod\n    def normalize_email(cls, value: str) -> str:\n        value = value.strip().lower()\n        if not re.fullmatch(r\"[^@\\s]+@[^@\\s]+\\.[^@\\s]+\", value):\n            raise ValueError(\"Enter a valid email address\")\n        return value\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.auth.login",
+        "files": [
+          "frontend/src/services/auth/auth.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/auth/me",
+    "source": "LTC-backend/app/auth/router.py",
+    "router": "\n    prefix=\"/api/auth\",\n    tags=[\"Auth\"]\n",
+    "contract": "@router.get(\"/me\")\ndef get_me(user = Depends(get_current_user)):\n    return {\n        **_public_user(user),\n        \"permissions\": sorted(resolve_effective_permissions(user)),\n    }\n",
+    "sha256": "5da87f786c76d03d2b20dd495d42d023168594c765bf7707876097bd7ccd1c59",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.auth.me",
+        "files": [
+          "frontend/src/services/auth/auth.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/refresh",
+    "source": "LTC-backend/app/auth/router.py",
+    "router": "\n    prefix=\"/api/auth\",\n    tags=[\"Auth\"]\n",
+    "contract": "@router.post(\"/refresh\")\ndef refresh(payload: RefreshRequest):\n    try:\n        return _session_response(_auth_client().auth.refresh_session(payload.refresh))\n    except HTTPException:\n        raise\n    except Exception:\n        raise HTTPException(status_code=401, detail=\"Invalid or expired refresh token\")\n\n\n",
+    "sha256": "dca93429eb056e84a77ff72770e990c61335e99014e89b91d63a074defcaa14b",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 401,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "RefreshRequest",
+        "source": "LTC-backend/app/auth/router.py",
+        "definition": "class RefreshRequest(BaseModel):\n    refresh: str = Field(min_length=1)\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.auth.refresh",
+        "files": [
+          "frontend/src/shared/api/client.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/set-password",
+    "source": "LTC-backend/app/auth/router.py",
+    "router": "\n    prefix=\"/api/auth\",\n    tags=[\"Auth\"]\n",
+    "contract": "@router.post(\"/set-password\")\ndef set_password(request: Request, payload: SetPasswordRequest):\n    _password_policy(payload.password)\n    try:\n        client = _auth_client()\n        current = client.auth.get_user(payload.access_token)\n        auth_user = current.user\n        if not auth_user:\n            raise ValueError(\"Invalid recovery token\")\n        attributes = {\"password\": payload.password}\n        if payload.first_name is not None or payload.last_name is not None:\n            attributes[\"data\"] = {\"first_name\": payload.first_name or \"\", \"last_name\": payload.last_name or \"\"}\n        supabase.auth.admin.update_user_by_id(str(auth_user.id), attributes)\n        app_user = _application_user(str(auth_user.id))\n        if not app_user:\n            raise HTTPException(status_code=403, detail=\"User does not have admin access\")\n        supabase.rpc(\n            \"rbac_activate_invited_user\",\n            {\n                \"target_auth_user_id\": str(auth_user.id),\n                \"event_request_id\": getattr(request.state, \"request_id\", None),\n            },\n        ).execute()\n        _audit_auth(action=\"PASSWORD_SET\", request=request, actor_user_id=str(app_user[\"id\"]), target_user_id=str(app_user[\"id\"]), reason=\"Invitation or recovery password completed\", after_state={\"status\": \"active\"})\n        return {\"message\": \"Password has been set successfully.\"}\n    except HTTPException:\n        raise\n    except Exception as exc:\n        if \"invitation has expired\" in str(exc).lower():\n            raise HTTPException(status_code=410, detail=\"This invitation has expired. Request a new invitation.\") from exc\n        if \"account is disabled\" in str(exc).lower():\n            raise HTTPException(status_code=403, detail=\"This account is disabled.\") from exc\n        raise HTTPException(status_code=400, detail=\"The reset link is invalid or has expired\")\n\n\n",
+    "sha256": "a94ddc7bdb15335a1550c7d9f75d537973e348823621049de927678b2ea32187",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 403,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "SetPasswordRequest",
+        "source": "LTC-backend/app/auth/router.py",
+        "definition": "class SetPasswordRequest(BaseModel):\n    access_token: str = Field(min_length=1)\n    password: str = Field(min_length=8, max_length=128)\n    first_name: str | None = Field(default=None, max_length=100)\n    last_name: str | None = Field(default=None, max_length=100)\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.auth.setPassword",
+        "files": [
+          "frontend/src/auth/reset-password/ResetPasswordPage.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/donations/admin/session/{session_id}/supporter-publication/",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "prefix=\"/api/donations\", tags=[\"Donations\"]",
+    "contract": "@donations_router.patch(\"/admin/session/{session_id}/supporter-publication/\")\ndef update_supporter_publication(\n    session_id: str,\n    payload: SupporterPublicationUpdate,\n    admin: dict = Depends(require_admin),\n):\n    return service.update_supporter_publication(\n        session_id,\n        payload.status,\n        str(admin.get(\"id\") or admin.get(\"auth_user_id\") or \"admin\"),\n        payload.anonymous,\n    )\n\n\n",
+    "sha256": "7545651e6d28c07816b425b275b0def3214a856cfd4dd0a566cef0727e4d3cae",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "SupporterPublicationUpdate",
+        "source": "LTC-backend/app/donations/schemas.py",
+        "definition": "class SupporterPublicationUpdate(BaseModel):\n    status: Literal[\"pending\", \"approved\", \"rejected\"]\n    anonymous: bool | None = None\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.supporterPublication",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/donations/checkout-session/",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "prefix=\"/api/donations\", tags=[\"Donations\"]",
+    "contract": "@donations_router.post(\"/checkout-session/\", status_code=201)\ndef create_checkout_session(\n    request: Request,\n    payload: CheckoutSessionCreate,\n    idempotency_key: str | None = Header(default=None, alias=\"Idempotency-Key\"),\n):\n    rate_limit(request, \"donation-checkout\", limit=10, window_seconds=300, discriminator=payload.donor_email)\n    return service.create_checkout_session(payload, idempotency_key)\n\n\n",
+    "sha256": "2dab4e002cb1ab3dca7442411f665ba493b4bd9fe72296d0d524ab34d5e7d1c4",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 201,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "CheckoutSessionCreate",
+        "source": "LTC-backend/app/donations/schemas.py",
+        "definition": "class CheckoutSessionCreate(BaseModel):\n    amount: Decimal = Field(decimal_places=2)\n    currency: str = Field(default=\"usd\", min_length=3, max_length=3)\n    frequency: Literal[\"one_time\", \"monthly\"] = \"one_time\"\n    donor_name: str = Field(min_length=1, max_length=150)\n    donor_email: str = Field(min_length=3, max_length=320)\n    # Privacy-safe default for API clients that omit an explicit preference.\n    anonymous: bool = True\n    message: str | None = Field(default=None, max_length=2000)\n\n    @field_validator(\"currency\")\n    @classmethod\n    def normalize_currency(cls, value: str) -> str:\n        return value.strip().lower()\n\n    @field_validator(\"donor_name\")\n    @classmethod\n    def normalize_name(cls, value: str) -> str:\n        value = \" \".join(value.split())\n        if not value:\n            raise ValueError(\"Donor name is required\")\n        return value\n\n    @field_validator(\"donor_email\")\n    @classmethod\n    def normalize_email(cls, value: str) -> str:\n        value = value.strip().lower()\n        if not re.fullmatch(r\"[^@\\s]+@[^@\\s]+\\.[^@\\s]+\", value):\n            raise ValueError(\"Enter a valid email address\")\n        return value\n\n    @field_validator(\"message\")\n    @classmethod\n    def normalize_message(cls, value: str | None) -> str | None:\n        if value is None:\n            return None\n        value = value.strip()\n        return value or None\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.checkoutSession",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/donations/pledges/",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "prefix=\"/api/donations\", tags=[\"Donations\"]",
+    "contract": "@donations_router.get(\"/pledges/\")\ndef get_public_pledges(limit: int = Query(default=50, ge=1, le=100)):\n    return service.get_public_pledges(limit)\n\n\n",
+    "sha256": "97c8be83e4d1f8fb081f1aea44265471dedafcc4851ba53bd389c13e6690df07",
+    "permissions": [],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=50, ge=1, le=100)"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.pledges",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/donations/pledges/",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "prefix=\"/api/donations\", tags=[\"Donations\"]",
+    "contract": "@donations_router.post(\"/pledges/\", status_code=201)\ndef create_pledge(request: Request, payload: PledgeCreate):\n    rate_limit(request, \"pledge-submission\", limit=5, window_seconds=900, discriminator=payload.email)\n    return service.create_pledge(payload)\n\n\n",
+    "sha256": "6d852ef10ae3d59bddef97354dd5c1ba375cb4a0993e8b3c02c59c048ef73444",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 201,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "PledgeCreate",
+        "source": "LTC-backend/app/donations/schemas.py",
+        "definition": "class PledgeCreate(BaseModel):\n    full_name: str = Field(min_length=2, max_length=150)\n    pledge_type: Literal[\"individual\", \"organization\"] = \"individual\"\n    organization: str | None = Field(default=None, max_length=200)\n    email: str = Field(min_length=3, max_length=320)\n    amount: Decimal = Field(gt=0, le=1000000, decimal_places=2)\n    currency: str = Field(default=\"usd\", min_length=3, max_length=3)\n    frequency: Literal[\"one_time\", \"monthly\"] = \"one_time\"\n    message: str | None = Field(default=None, max_length=1000)\n    consent_to_publish: bool = False\n\n    @field_validator(\"organization\", \"message\")\n    @classmethod\n    def normalize_optional_text(cls, value: str | None) -> str | None:\n        if value is None:\n            return None\n        value = \" \".join(value.split())\n        return value or None\n\n    @field_validator(\"full_name\")\n    @classmethod\n    def normalize_pledge_name(cls, value: str) -> str:\n        value = \" \".join(value.split())\n        if not value:\n            raise ValueError(\"Name is required\")\n        return value\n\n    @field_validator(\"email\")\n    @classmethod\n    def normalize_pledge_email(cls, value: str) -> str:\n        value = value.strip().lower()\n        if not re.fullmatch(r\"[^@\\s]+@[^@\\s]+\\.[^@\\s]+\", value):\n            raise ValueError(\"Enter a valid email address\")\n        return value\n\n    @field_validator(\"currency\")\n    @classmethod\n    def normalize_pledge_currency(cls, value: str) -> str:\n        return value.strip().lower()\n\n    @field_validator(\"organization\")\n    @classmethod\n    def require_organization_name(cls, value: str | None, info) -> str | None:\n        if info.data.get(\"pledge_type\") == \"organization\" and not value:\n            raise ValueError(\"Organization name is required\")\n        return value\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.pledges",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/donations/progress/",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "prefix=\"/api/donations\", tags=[\"Donations\"]",
+    "contract": "@donations_router.get(\"/progress/\")\ndef get_donation_progress():\n    return service.get_progress()\n\n\n",
+    "sha256": "8b2c8aee98f1fbe537cf6d4468cfe5c477415a833f666a4daaa8ebd2150c9508",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.progress",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/donations/session/{session_id}/",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "prefix=\"/api/donations\", tags=[\"Donations\"]",
+    "contract": "@donations_router.get(\"/session/{session_id}/\")\ndef get_donation_session(session_id: str):\n    return service.get_donation_session(session_id)\n\n\n",
+    "sha256": "d2a37db1e584566ba592846c90e05e788cc608f2a279994bdecf51aaa2606729",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.session",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/donations/supporters/",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "prefix=\"/api/donations\", tags=[\"Donations\"]",
+    "contract": "@donations_router.get(\"/supporters/\")\ndef get_public_supporters(limit: int = Query(default=9, ge=1, le=50), offset: int = Query(default=0, ge=0)):\n    return service.get_public_supporters(limit, offset)\n\n\n",
+    "sha256": "39635d972769c76242cc5e8102bdde2387861a639cf516828ea4ad4ed6bdf95a",
+    "permissions": [],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=9, ge=1, le=50), offset: int = Query(default=0, ge=0)"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.donations.supporters",
+        "files": [
+          "frontend/src/services/donations/donations.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/health",
+    "source": "LTC-backend/app/main.py",
+    "router": "",
+    "contract": "@app.get(\"/api/health\")\ndef health_check():\n    return {\"status\": \"ok\"}\n\n\n",
+    "sha256": "3051a081b680aa6600e1343121c1a60c951dc9df57dbd0d47fdd26b6f18cb84e",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/mentors/applications/",
+    "source": "LTC-backend/app/mentors/router.py",
+    "router": "\n    prefix=\"/api/mentors\",\n    tags=[\"Mentors\"],\n",
+    "contract": "@router.post(\n    \"/applications/\",\n    response_model=MentorApplicationResponse,\n    status_code=status.HTTP_201_CREATED,\n)\ndef submit_mentor_application(\n    request: Request,\n    payload: MentorApplicationCreate,\n):\n    rate_limit(request, \"mentor-application\", limit=5, window_seconds=300, discriminator=payload.email)\n\n    return service.create_application(payload)\n\n\n",
+    "sha256": "f1837e3e8f21ca6bfb4e53136a4fb364950a8ef83e8c0af96725859180cea856",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "MentorApplicationCreate",
+        "source": "LTC-backend/app/mentors/schemas.py",
+        "definition": "class MentorApplicationCreate(BaseModel):\n    name: str = Field(min_length=2, max_length=150)\n    email: str = Field(min_length=3, max_length=320)\n    background: str = Field(min_length=2, max_length=500)\n    helpOptions: list[HelpOption] = Field(min_length=1, max_length=6)\n    contactMethod: ContactMethod = \"Email\"\n    message: str | None = Field(default=None, max_length=2000)\n\n    @field_validator(\"name\", \"background\")\n    @classmethod\n    def normalize_required_text(cls, value: str) -> str:\n        value = value.strip()\n\n        if not value:\n            raise ValueError(\"This field is required\")\n\n        return value\n\n    @field_validator(\"email\")\n    @classmethod\n    def normalize_email(cls, value: str) -> str:\n        value = value.strip().lower()\n\n        if not re.fullmatch(r\"[^@\\s]+@[^@\\s]+\\.[^@\\s]+\", value):\n            raise ValueError(\"Enter a valid email address\")\n\n        return value\n\n    @field_validator(\"helpOptions\")\n    @classmethod\n    def remove_duplicate_options(\n        cls,\n        values: list[HelpOption],\n    ) -> list[HelpOption]:\n        return list(dict.fromkeys(values))\n\n    @field_validator(\"message\")\n    @classmethod\n    def normalize_message(cls, value: str | None) -> str | None:\n        if value is None:\n            return None\n\n        value = value.strip()\n        return value or None\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.mentorApplications",
+        "files": [
+          "frontend/src/site/mentorship/MentorAStudent.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/profile-submission-links/{token}/validate",
+    "source": "LTC-backend/app/profile/submission_router.py",
+    "router": "tags=[\"Profile Submission Links\"]",
+    "contract": "@router.get(\"/api/profile-submission-links/{token}/validate\")\ndef validate_submission_link(request: Request, token: str):\n    rate_limit(request, \"profile-token-validate\", limit=20, window_seconds=300, discriminator=token)\n    return submission_service.validate_submission_link(token)\n\n\n",
+    "sha256": "2ca0d240859930f9a13ab5f5d33be393387c40f7a34243be4a7c5deb34112d85",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.profileSubmissionLinks.validate",
+        "files": [
+          "frontend/src/services/profileSubmissionLinks/profileSubmissionLinks.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/profile-submissions/{token}",
+    "source": "LTC-backend/app/profile/submission_router.py",
+    "router": "tags=[\"Profile Submission Links\"]",
+    "contract": "@router.post(\"/api/profile-submissions/{token}\", status_code=201)\ndef submit_profile(request: Request, token: str, payload: ProfileSubmissionRequest):\n    rate_limit(request, \"profile-token-submit\", limit=10, window_seconds=3600, discriminator=token)\n    return submission_service.submit_profile(token, payload.model_dump(exclude_none=True))\n\n\n",
+    "sha256": "bc86d732834215b30717a92312faad6547b743b50580bf205684251e4c610126",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 201,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "ProfileSubmissionRequest",
+        "source": "LTC-backend/app/profile/submission_schemas.py",
+        "definition": "class ProfileSubmissionRequest(BaseModel):\n    name: str = Field(min_length=1, max_length=255)\n    email: str | None = Field(default=None, max_length=320)\n    role: str = Field(min_length=1, max_length=255)\n    department: str | None = Field(default=None, max_length=255)\n    quote: str | None = Field(default=None, max_length=500)\n    bio: str | None = Field(default=None, max_length=5000)\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.profileSubmissionLinks.submit",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/profile-submissions/{token}/image",
+    "source": "LTC-backend/app/profile/submission_router.py",
+    "router": "tags=[\"Profile Submission Links\"]",
+    "contract": "@router.post(\"/api/profile-submissions/{token}/image\")\nasync def upload_profile_image(request: Request, token: str, file: UploadFile = File(...), profile_id: str | None = Query(default=None)):\n    await run_in_threadpool(\n        rate_limit, request, \"profile-token-image\", 10, 3600, token\n    )\n    contents = await read_upload_limited(file, submission_service.MAX_IMAGE_SIZE)\n    return await run_in_threadpool(\n        submission_service.upload_profile_image, token, file.content_type, contents, profile_id\n    )\n",
+    "sha256": "6e0c6b3906821fedd616555fd6880e9e86e67bddefa721d9c5fe4ace1aee14af",
+    "permissions": [],
+    "queryDeclarations": [
+      {
+        "name": "profile_id",
+        "declaration": "default=None)"
+      }
+    ],
+    "contentType": "multipart/form-data",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.profileSubmissionLinks.upload",
+        "files": [
+          "frontend/src/services/teamProfiles/teamProfiles.service.js"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/ready",
+    "source": "LTC-backend/app/main.py",
+    "router": "",
+    "contract": "@app.get(\"/api/ready\")\ndef readiness_check():\n    try:\n        redis_client().ping()\n        supabase.table(\"application_users\").select(\"id\", count=\"exact\", head=True).limit(1).execute()\n    except Exception as exc:\n        logger.exception(\"Readiness check failed\")\n        raise HTTPException(status_code=503, detail=\"A required dependency is unavailable\") from exc\n    return {\"status\": \"ready\"}\n",
+    "sha256": "450263047f5c31d7c164cc2bc0084294c9d30718c1b502e71572efbf064bbdc6",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 503,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/stories",
+    "source": "LTC-backend/app/stories/router.py",
+    "router": "tags=[\"Stories\"]",
+    "contract": "@public_router.get(\"/api/stories\")\ndef list_public_stories(\n    limit: int = Query(default=50, ge=1, le=200), offset: int = Query(default=0, ge=0)\n):\n    return service.list_public_stories(limit=limit, offset=offset)\n\n\n",
+    "sha256": "ce9d8e63d4faa8af3f119ba1dc6bc067974db5f8cdbac7b8598c6d6dcc3efde4",
+    "permissions": [],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=50, ge=1, le=200), offset: int = Query(default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.stories",
+        "files": [
+          "frontend/src/site/stories/Stories.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/stories/{story_id}",
+    "source": "LTC-backend/app/stories/router.py",
+    "router": "tags=[\"Stories\"]",
+    "contract": "@public_router.get(\"/api/stories/{story_id}\")\ndef get_public_story(story_id: str):\n    return service.get_public_story(story_id)\n\n\n",
+    "sha256": "c516cfc31cf9d3368f1241676225b43f1840da99853649e520df8ee9e7e09d21",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/stripe/webhook/",
+    "source": "LTC-backend/app/donations/router.py",
+    "router": "prefix=\"/api/stripe\", tags=[\"Stripe\"]",
+    "contract": "@stripe_router.post(\"/webhook/\")\nasync def stripe_webhook(\n    request: Request,\n    stripe_signature: str | None = Header(default=None, alias=\"Stripe-Signature\"),\n):\n    payload = await request.body()\n    if len(payload) > 1024 * 1024:\n        raise HTTPException(status_code=413, detail=\"Webhook payload is too large\")\n    return await run_in_threadpool(service.process_webhook, payload, stripe_signature)\n",
+    "sha256": "75d71911cdf09bbdd83a5e0d186e8c9e644b094493a9b66b60e6743bb238b80f",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 413,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/subscribe/",
+    "source": "LTC-backend/app/subscribers/router.py",
+    "router": "prefix=\"/api\", tags=[\"Subscribers (Public)\"]",
+    "contract": "@public_router.post(\"/subscribe/\", status_code=200)\ndef subscribe(request: Request, payload: SubscribeRequest):\n    rate_limit(request, \"subscribe\", limit=5, window_seconds=60, discriminator=payload.email)\n    return service.subscribe(payload.email, payload.source)\n\n\n",
+    "sha256": "84cb64808153e027f12fe84c0c40467356f81b5b7614feedb9aae88f22805f10",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "application/json",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [
+      {
+        "name": "SubscribeRequest",
+        "source": "LTC-backend/app/subscribers/schemas.py",
+        "definition": "class SubscribeRequest(BaseModel):\n    email: str\n    source: Optional[str] = Field(default=None, max_length=100)\n\n    @field_validator(\"email\")\n    @classmethod\n    def normalize_email(cls, value: str) -> str:\n        value = value.strip().lower()\n        if not re.fullmatch(r\"[^@\\s]+@[^@\\s]+\\.[^@\\s]+\", value):\n            raise ValueError(\"Enter a valid email address\")\n        return value\n\n"
+      }
+    ],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.subscribe",
+        "files": [
+          "frontend/src/admin/api/adminServices.js",
+          "frontend/src/admin/newsletters/NewslettersSection.jsx",
+          "frontend/src/site/home/EmailCapture.jsx"
+        ]
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/team-profiles",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "tags=[\"Team Profiles\"]",
+    "contract": "@public_router.get(\"/api/team-profiles\")\ndef list_public_profiles(\n    limit: int = Query(default=50, ge=1, le=200), offset: int = Query(default=0, ge=0)\n):\n    return service.list_public_profiles(limit=limit, offset=offset)\n\n\n",
+    "sha256": "61aac06f581d047cc32cf5a190c8eb56051a74d6bf7dde023573062da17695b6",
+    "permissions": [],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=50, ge=1, le=200), offset: int = Query(default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/team-profiles/{profile_id}",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "tags=[\"Team Profiles\"]",
+    "contract": "@public_router.get(\"/api/team-profiles/{profile_id}\")\ndef get_public_profile(profile_id: str):\n    return service.get_public_profile(profile_id)\n\n\n",
+    "sha256": "b8c7a64ecf3bc89338360b672ba101029f088e7111d87d6fd5408679b50ad0b0",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/team-profiles/published",
+    "source": "LTC-backend/app/profile/router.py",
+    "router": "tags=[\"Team Profiles\"]",
+    "contract": "@public_router.get(\"/api/team-profiles/published\")\ndef list_published_profiles(\n    limit: int = Query(default=50, ge=1, le=200), offset: int = Query(default=0, ge=0)\n):\n    return service.list_public_profiles(limit=limit, offset=offset)\n\n\n",
+    "sha256": "c8621be0c63305d3d308e62e0b99675b52f166c190111eb6a012030b273c49ef",
+    "permissions": [],
+    "queryDeclarations": [
+      {
+        "name": "limit",
+        "declaration": "default=50, ge=1, le=200), offset: int = Query(default=0, ge=0"
+      }
+    ],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/unsubscribe/{token}/",
+    "source": "LTC-backend/app/subscribers/router.py",
+    "router": "prefix=\"/api\", tags=[\"Subscribers (Public)\"]",
+    "contract": "@public_router.get(\"/unsubscribe/{token}/\", status_code=200)\ndef unsubscribe(token: str):\n    return service.unsubscribe(token)\n\n\n# ---------------------------------------------------------------------------\n# Admin router\n# ---------------------------------------------------------------------------\n",
+    "sha256": "9ef4bfcd8a6c15c58d0fde9779e37dfe7f6d00692f824dd874a2db2163c44193",
+    "permissions": [],
+    "queryDeclarations": [],
+    "contentType": "no body or source-defined",
+    "successStatus": 200,
+    "behavioralFixtureStatus": "pending comprehensive request/response and side-effect parity",
+    "inputModels": [],
+    "frontendCallers": [
+      {
+        "selector": "endpoints.unsubscribe",
+        "files": [
+          "frontend/src/site/newsletter/Unsubscribe.jsx"
+        ]
+      }
+    ]
+  }
+]

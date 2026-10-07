@@ -1,0 +1,445 @@
+{
+  "method": "Native PNG decode, RGB difference >8, same original/migrated build fixture conditions. Compression differences expected for Team hero; no blanket visual approval.",
+  "pairs": [
+    {
+      "name": "1024-_.png",
+      "width": 1024,
+      "height": 5195,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1024-_about.png",
+      "width": 1024,
+      "height": 4255,
+      "pixelsChangedBeyond8": 16922,
+      "changedRatio": 0.003883758078730905,
+      "status": "review difference"
+    },
+    {
+      "name": "1024-_donate.png",
+      "width": 1024,
+      "height": 2426,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1024-_donation_success.png",
+      "width": 1024,
+      "height": 2426,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1024-_impact.png",
+      "width": 1024,
+      "height": 2097,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1024-_mentor.png",
+      "width": 1024,
+      "height": 4134,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1024-_mission.png",
+      "width": 1024,
+      "height": 4255,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1024-_profile_submit_fixture.png",
+      "width": 1024,
+      "height": 1625,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1024-_stories.png",
+      "width": 1024,
+      "height": 1551,
+      "pixelsChangedBeyond8": 25509,
+      "changedRatio": 0.016061336436170214,
+      "status": "review difference"
+    },
+    {
+      "name": "1024-_team.png",
+      "width": 1024,
+      "height": 1649,
+      "pixelsChangedBeyond8": 8875,
+      "changedRatio": 0.00525590793662826,
+      "status": "review difference"
+    },
+    {
+      "name": "1024-_unsubscribe_fixture.png",
+      "width": 1024,
+      "height": 1389,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_.png",
+      "width": 1440,
+      "height": 5790,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_about.png",
+      "width": 1440,
+      "height": 4749,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_donate.png",
+      "width": 1440,
+      "height": 2503,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_donation_success.png",
+      "width": 1440,
+      "height": 2503,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_impact.png",
+      "width": 1440,
+      "height": 2270,
+      "pixelsChangedBeyond8": 25631,
+      "changedRatio": 0.007841103768967204,
+      "status": "review difference"
+    },
+    {
+      "name": "1440-_mentor.png",
+      "width": 1440,
+      "height": 4460,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_mission.png",
+      "width": 1440,
+      "height": 4749,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_profile_submit_fixture.png",
+      "width": 1440,
+      "height": 1625,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_stories.png",
+      "width": 1440,
+      "height": 1659,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "1440-_team.png",
+      "width": 1440,
+      "height": 1770,
+      "pixelsChangedBeyond8": 24467,
+      "changedRatio": 0.009599419334588827,
+      "status": "review difference"
+    },
+    {
+      "name": "1440-_unsubscribe_fixture.png",
+      "width": 1440,
+      "height": 1389,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_.png",
+      "width": 320,
+      "height": 7023,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_about.png",
+      "width": 320,
+      "height": 5557,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_donate.png",
+      "width": 320,
+      "height": 2694,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_donation_success.png",
+      "width": 320,
+      "height": 2694,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_impact.png",
+      "width": 320,
+      "height": 3133,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_mentor.png",
+      "width": 320,
+      "height": 6431,
+      "pixelsChangedBeyond8": 14411,
+      "changedRatio": 0.007002701757113979,
+      "status": "review difference"
+    },
+    {
+      "name": "320-_mission.png",
+      "width": 320,
+      "height": 5557,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_profile_submit_fixture.png",
+      "width": 320,
+      "height": 1861,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_stories.png",
+      "width": 320,
+      "height": 2074,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "320-_team.png",
+      "width": 320,
+      "height": 2009,
+      "pixelsChangedBeyond8": 5766,
+      "changedRatio": 0.00896901443504231,
+      "status": "review difference"
+    },
+    {
+      "name": "320-_unsubscribe_fixture.png",
+      "width": 320,
+      "height": 1902,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_.png",
+      "width": 375,
+      "height": 6842,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_about.png",
+      "width": 375,
+      "height": 5165,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_donate.png",
+      "width": 375,
+      "height": 2648,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_donation_success.png",
+      "width": 375,
+      "height": 2648,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_impact.png",
+      "width": 375,
+      "height": 3038,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_mentor.png",
+      "width": 375,
+      "height": 5991,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_mission.png",
+      "width": 375,
+      "height": 5165,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_profile_submit_fixture.png",
+      "width": 375,
+      "height": 1773,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_stories.png",
+      "width": 375,
+      "height": 1945,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "375-_team.png",
+      "width": 375,
+      "height": 1931,
+      "pixelsChangedBeyond8": 7051,
+      "changedRatio": 0.009737269117900915,
+      "status": "review difference"
+    },
+    {
+      "name": "375-_unsubscribe_fixture.png",
+      "width": 375,
+      "height": 1856,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_.png",
+      "width": 768,
+      "height": 7048,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_about.png",
+      "width": 768,
+      "height": 4471,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_donate.png",
+      "width": 768,
+      "height": 2772,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_donation_success.png",
+      "width": 768,
+      "height": 2772,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_impact.png",
+      "width": 768,
+      "height": 2401,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_mentor.png",
+      "width": 768,
+      "height": 4813,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_mission.png",
+      "width": 768,
+      "height": 4471,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_profile_submit_fixture.png",
+      "width": 768,
+      "height": 1625,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_stories.png",
+      "width": 768,
+      "height": 1927,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    },
+    {
+      "name": "768-_team.png",
+      "width": 768,
+      "height": 2135,
+      "pixelsChangedBeyond8": 5103,
+      "changedRatio": 0.0031121926229508196,
+      "status": "review difference"
+    },
+    {
+      "name": "768-_unsubscribe_fixture.png",
+      "width": 768,
+      "height": 1896,
+      "pixelsChangedBeyond8": 0,
+      "changedRatio": 0,
+      "status": "pixel match within tolerance"
+    }
+  ]
+}

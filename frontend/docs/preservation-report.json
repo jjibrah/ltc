@@ -1,0 +1,563 @@
+{
+  "changedBaselineFiles": [
+    "src/site/stories/Stories.jsx",
+    "src/site/team/Team.jsx"
+  ],
+  "intentionalChanges": {
+    "src/site/stories/Stories.jsx": "Correct undefined Stories modal variable; no presentation change",
+    "src/site/team/Team.jsx": "Same Team hero photo/crop/overlays, responsive AVIF/WebP delivery"
+  },
+  "pairs": [
+    {
+      "width": 320,
+      "path": "/",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/about",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/mission",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/impact",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/stories",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/team",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/donate",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/mentor",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/donation-success",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/unsubscribe/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 320,
+      "path": "/profile/submit/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/about",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/mission",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/impact",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/stories",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/team",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/donate",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/mentor",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/donation-success",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/unsubscribe/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 375,
+      "path": "/profile/submit/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/about",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/mission",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/impact",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/stories",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/team",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/donate",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/mentor",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/donation-success",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/unsubscribe/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 768,
+      "path": "/profile/submit/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/about",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/mission",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/impact",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/stories",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/team",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/donate",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/mentor",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/donation-success",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/unsubscribe/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1024,
+      "path": "/profile/submit/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/about",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/mission",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/impact",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/stories",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/team",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/donate",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/mentor",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/donation-success",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/unsubscribe/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    },
+    {
+      "width": 1440,
+      "path": "/profile/submit/fixture",
+      "textEqual": true,
+      "beforeOverflow": false,
+      "afterOverflow": false,
+      "beforeErrors": [],
+      "afterErrors": [],
+      "status": "DOM state compared; image/crop review separate"
+    }
+  ],
+  "limitations": "Empty synthetic content, external fonts/video blocked. Dynamic published content, keyboard/dialog states, zoom, reduced motion, and field/regional performance remain unverified."
+}

@@ -1,0 +1,143 @@
+{
+  "target": {
+    "type": "TEST",
+    "project": "vgqvaluplhbgyrvzvgue",
+    "database": "postgres"
+  },
+  "packet": "fresh-test-bootstrap.sql",
+  "sha256": "70f29fa1532142eff94796a58bdf24635caa61d36e6df978d8232c9681f659cd",
+  "approval": "Explicit owner answer in this session",
+  "result": "COMMIT",
+  "productionAuthorized": false,
+  "members": [
+    {
+      "file": "20260901_001_core.sql",
+      "sha256": "7b4d9dff217eab755b7780d14344e639b555a730b4cae48d3bb5366558e7e8e0",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260901_002_newsletters.sql",
+      "sha256": "c83277d4dfbaa6c50cc52de2c653c72e936d924f56f43b6d2089eaa16c8e85b5",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260901_003_donations.sql",
+      "sha256": "efd1a98e30dd517f348b68ee4d8ab930a77f611f8a8d63bb6e3b6aa9a2a3bcf2",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260905_010_content_and_storage.sql",
+      "sha256": "3d492234155afe6951526a4f6e1371e6abc46ddabda1eb3e953375aa6344388b",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260905_020_permissions_hardening.sql",
+      "sha256": "8ca297f9e9470ba2a95f016a774779626794e33d67ba5179231f050be7ecf6f7",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260905_030_reliability_indexes.sql",
+      "sha256": "98f09c9dad7ee2748c3ece34cd3057e1f0eb843cd9e27899b9e272cd8f96ca23",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260905_reusable_profile_submission_links.sql",
+      "sha256": "7c5d1b2151f3150b580f55a82a7a566f1aa7b409baa1634c890dc859d2676762",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260913_040_rbac_and_audit.sql",
+      "sha256": "e11a0daba28f27f65e917dec7614bf1d30a831460603788a849a79b848ff4342",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260913_041_fix_audit_user_deletion.sql",
+      "sha256": "4a32dab510e5b9c7aae766f1bde17aae5253923d4dc6b037162ad9e4aab6100e",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260913_042_update_deletable_accounts.sql",
+      "sha256": "135e6cefa5440d415f430d4913a69b985f0a3ca9c31e2309631e7695585f657b",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260913_043_authorization_performance.sql",
+      "sha256": "a9ac5ca77bce1c43ebbac5c877a95579f3c5881e22c64c9a80e984d15007d34c",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260913_044_performance_optimizations.sql",
+      "sha256": "9cc6a0bd2f71bc70aa7c0e75f9a4eddf0304bf47af8dab0a48f5cf0b46ac3ad5",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260913_045_invitation_lifecycle.sql",
+      "sha256": "6e9d87a6a979596057624742820b22c1ca128df878dc48aed3fd1b4452c08f8b",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260913_046_invitation_lifecycle_actions.sql",
+      "sha256": "1f47eeb7a2205c7fe7d805ef8570aac24e0e14fb28636ea0b067e2907382123b",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260914_047_role_permissions_management.sql",
+      "sha256": "48673cc44656839afb46da86f2cde9940f492b23b17803e8cfe9488b75766fda",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260914_048_manual_donations.sql",
+      "sha256": "09aac998b1fb78ce7c6a4ad0379cbe7d90c27785f0b9c1c262aa0e3b927aeaee",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260916_050_pledges.sql",
+      "sha256": "de128d48c7e30ce2512f43a2e0975222566126a33a29c8d38e3d629b7bbeef09",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260916_051_add_pledge_type.sql",
+      "sha256": "fb83f9a3165e310495004bbab8b1425a29474542b3904f0d188418a016fd14fe",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260916_052_team_profile_order.sql",
+      "sha256": "0439be601b0c89a170cec042ef601e64ffd97a2f4c85eea1f8c5fed697cc9f4c",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260916_053_protect_primary_super_admin.sql",
+      "sha256": "52c832e45648f66c5ec698a6c2d8255dcd6d9c6ad3dc7537fc3459c0784a8bf6",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260920_045_public_supporters_pagination.sql",
+      "sha256": "e7e178b1ed4f74941ec295e553c2533ebda02cf5bc657b2479a7d7dcf796e4a7",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20260922_054_remove_donation_maximum.sql",
+      "sha256": "b8a6a346fe4aef57ec63a27d0fe6812bd21fe26730f37192d0b26c5229045f6b",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    },
+    {
+      "file": "20261007_060_node_reliability.sql",
+      "sha256": "241b816907d0624dd45ef00fd85788a8fbf2771da168d8f096636a4d8d2f7db9",
+      "execution": "Included once in explicitly approved fresh TEST transaction; not separately applied"
+    }
+  ],
+  "additionalPackets": [
+    {
+      "file": "20261007_061_storage_cleanup.sql",
+      "sha256": "55c1662ffc552323a5114763deb718409a5960185f1e5d2946ae87bc0edb8ab3",
+      "target": {
+        "type": "TEST",
+        "project": "vgqvaluplhbgyrvzvgue",
+        "database": "postgres"
+      },
+      "approval": "Separate explicit owner answer in this session",
+      "result": "COMMIT",
+      "productionAuthorized": false
+    }
+  ]
+}

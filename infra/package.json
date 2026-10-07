@@ -1,0 +1,23 @@
+{
+  "name": "ltc-infra",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.20.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "synth": "npm run build && cdk synth --app 'node dist/app.js'",
+    "test": "npm run synth -- --quiet && node --test --test-isolation=none tests/*.test.mjs"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.215.0",
+    "constructs": "^10.4.2"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.1029.0",
+    "typescript": "^5.9.2",
+    "@types/node": "^24.3.0"
+  }
+}

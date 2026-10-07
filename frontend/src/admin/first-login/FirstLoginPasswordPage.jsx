@@ -1,0 +1,16 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthAlert from '../../auth/components/AuthAlert';
+import AuthSubmitButton from '../../auth/components/AuthSubmitButton';
+import PasswordField from '../../auth/components/PasswordField';
+import { AdminCard } from '../components/AdminPrimitives';
+import '../../auth/auth.css';
+import { useAuth } from '../../app/providers/AuthProvider';
+import { authService } from '../../services/auth/auth.service';
+
+export default function FirstLoginPasswordPage() {
+  const { user, refreshSession, isAuthenticated } = useAuth(); const navigate = useNavigate(); const [currentPassword, setCurrentPassword] = useState(''); const [password, setPassword] = useState(''); const [confirm, setConfirm] = useState(''); const [error, setError] = useState(''); const [loading, setLoading] = useState(false);
+  const submit = async (event) => { event.preventDefault(); setError(''); if (!user) { setError('Your session is no longer available. Please sign in again.'); return; } if (!currentPassword) { setError('Enter your temporary or current password.'); return; } if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password)) { setError('Use at least 8 characters, including uppercase, lowercase, and a number.'); return; } if (password !== confirm) { setError('Passwords do not match.'); return; } setLoading(true); try { await authService.changePassword(currentPassword, password); await refreshSession(); navigate('/admin/dashboard', { replace: true }); } catch (err) { setError(err.message); } finally { setLoading(false); } };
+  if (!isAuthenticated || !user?.mustChangePassword) return <div className="admin-page admin-password-page"><AdminCard><div className="admin-card__body"><h1 className="auth-heading">First login unavailable</h1><p className="auth-description">Sign in with an invited account to continue.</p></div></AdminCard></div>;
+  return <div className="admin-page admin-password-page"><AdminCard><div className="admin-card__body"><h1 className="auth-heading">Create your password</h1><p className="auth-description">For security, replace your temporary password before accessing the LTC Admin Portal.</p>{error && <AuthAlert title="Unable to save password">{error}</AuthAlert>}<form className="auth-form" onSubmit={submit}><PasswordField label="Temporary or current password" id="current-password" name="currentPassword" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} autoComplete="current-password" /><PasswordField label="New password" id="new-password" name="newPassword" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" /><PasswordField label="Confirm password" id="confirm-password" name="confirmPassword" value={confirm} onChange={(event) => setConfirm(event.target.value)} autoComplete="new-password" /><p className="auth-password-requirements">Use at least 8 characters, including one uppercase letter, one lowercase letter, and one number.</p><AuthSubmitButton loading={loading} loadingLabel="Saving password…">Save password</AuthSubmitButton></form></div></AdminCard></div>;
+}

@@ -1,0 +1,36 @@
+{
+  "name": "ltc-backend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": "24.20.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test --test-isolation=none dist/tests/*.test.js",
+    "start": "node --env-file-if-exists=.env dist/src/server.js",
+    "dev": "npm run build && npm start",
+    "inventory": "node scripts/inventory.mjs",
+    "worker": "node --env-file-if-exists=.env dist/src/workers/worker.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.890.0",
+    "@supabase/supabase-js": "^2.57.0",
+    "express": "^5.1.0",
+    "jose": "^6.1.0",
+    "multer": "^2.0.2",
+    "redis": "^5.8.0",
+    "sanitize-html": "^2.18.0",
+    "stripe": "^18.5.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.3.0",
+    "@types/sanitize-html": "^2.16.2",
+    "typescript": "^5.9.2"
+  }
+}
