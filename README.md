@@ -1,5 +1,7 @@
 # Living The Charge
 
+[live site](https://livingthecharge.org/)
+
 This directory is the standalone application repository root. Run Git setup and deployment builds from **ltc/**, not the surrounding reference workspace. React/Vite (including the admin portal) lives in `frontend/`; Node.js/TypeScript in `backend/`; AWS CDK, Docker and operational runbooks in `infra/`. `admin/` contains planning/handoff documents, not a separate application.
 
 Migration status: implementation and verification in progress. The legacy `../LTC-backend/`, organizational `../LTC-docs/` and reference assets remain in the surrounding workspace and are not part of this deployable repository. Do not deploy based solely on mocked checks. Current release gates are in [launch readiness](infra/docs/launch-readiness.md).
