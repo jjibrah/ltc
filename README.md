@@ -1,4 +1,4 @@
-#  [Living The Charge](https://livingthecharge.org/) : click to access live site
+#  [Living The Charge](https://livingthecharge.org/) 
 
 
 This directory is the standalone application repository root. Run Git setup and deployment builds from **ltc/**, not the surrounding reference workspace. React/Vite (including the admin portal) lives in `frontend/`; Node.js/TypeScript in `backend/`; AWS CDK, Docker and operational runbooks in `infra/`. `admin/` contains planning/handoff documents, not a separate application.
