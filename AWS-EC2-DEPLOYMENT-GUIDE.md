@@ -36,7 +36,7 @@ Verified in this review:
 - `admin/implementation.md` is referenced by repository instructions but absent in this checkout. Use the current launch report for available handoff evidence; do not fabricate a passing review of the missing file.
 - The checkout has an existing untracked root `package-lock.json`; do not blindly include it in a release commit. Each application has its own lockfile.
 
-**Database gate:** the supplied October 7 production schema export lacked Node compatibility RPCs and durable-job tables. This is historical evidence, not a fresh live inspection. The production upgrade is recorded as unapproved/unexecuted. Startup can succeed while affected routes fail.
+**Database update, 8 October 2026:** the owner confirmed the reviewed Node compatibility upgrade on PRODUCTION `dhfkysaazacblcazicom / postgres` was applied and verified. The supplied October 7 export predates that upgrade and is historical evidence. The agent has not inspected the current live database or independently checked the owner's verification. Do not replay the upgrade. Billing/settings approval and execution remain separately unconfirmed; provider/application acceptance and deployment are still required.
 
 | Review packet | Target recorded in packet | SHA-256 of reviewed SQL |
 | --- | --- | --- |
@@ -54,23 +54,25 @@ Keep a private operational record; no secrets belong in this document, Git or ch
 | Item | Value to record |
 | --- | --- |
 | GitHub repository | Exact owner/repository and approved release commit |
-| Domain | **Verify `livingthrcharge.org` in your Namecheap account** |
+| Domain / DNS | Owner-confirmed `livingthecharge.org`; Namecheap manages DNS; verify authoritative nameservers |
 | AWS account / region | Account ID and selected region |
 | EC2 | Instance ID, AMI, architecture, instance type, subnet, security group |
 | Production Supabase region | Confirm in its dashboard; do not infer from TEST |
 | Staging provider identities | TEST Supabase, Stripe sandbox, controlled Resend setup |
 | Production provider identities | Separate secret, Stripe account/webhook, verified sender |
+| AWS Free Tier | Owner reports the teammate's newly created account has signup Free Tier; record its actual plan, remaining credits and expiry before provisioning |
+| Event traffic | Owner estimates 1,000 visitors; total attendance versus peak concurrent arrivals remains unconfirmed; rehearse the expected burst on TEST |
 | Budget | Monthly AWS ceiling plus Supabase/email separately |
 | Operations | Alert recipients, recovery owner, backup retention, agreed RPO/RTO |
 
-Your supplied spelling is `livingthrcharge.org`, whereas repository mail defaults use `livingthecharge.org`. These are different domains. Verify ownership and choose deliberately before DNS, certificates, Resend verification or public URLs. Examples below use your supplied spelling without claiming ownership or DNS has been checked.
+The owner confirmed `livingthecharge.org` as the deployment domain and Namecheap as the DNS manager. Examples below use that exact spelling. Confirm the authoritative nameservers and export existing DNS records before changes; domain ownership, active DNS configuration and provider verification have not been independently established by this guide.
 
 Suggested hosts:
 
 | Environment | Website | API |
 | --- | --- | --- |
-| Staging | `staging.livingthrcharge.org` | `api-staging.livingthrcharge.org` |
-| Production | `livingthrcharge.org` and optionally `www.livingthrcharge.org` | `api.livingthrcharge.org` |
+| Staging | `staging.livingthecharge.org` | `api-staging.livingthecharge.org` |
+| Production | `livingthecharge.org` and optionally `www.livingthecharge.org` | `api.livingthecharge.org` |
 
 Use separate production/staging EC2 hosts, queues, secrets and static buckets. Prefer separate AWS accounts as you mature. Choose `us-east-1` if it is suitably close to production Supabase; global visitors do not require multi-region database writes. CloudFront certificates must be in `us-east-1` regardless of API location.
 
@@ -80,7 +82,7 @@ In AWS Console:
 
 1. Protect the root account with MFA, remove root access keys, and use an administrative IAM Identity Center identity for daily work. Configure a billing contact and budget alerts. A budget notification is not a spending cap.
 2. Inspect the new instance before running commands. This walkthrough assumes **Ubuntu Server 24.04 LTS, x86-64**. Run `cat /etc/os-release` and `uname -m`. If it is Amazon Linux or ARM, adapt installation/image commands first; do not paste Ubuntu commands into another OS.
-3. A `t3.medium` (2 vCPU, 4 GiB RAM) is a starting staging candidate, not measured production capacity. Start with an encrypted 30–40 GiB gp3 root volume and monitor free space. Review burst-credit charges/limits and actual traffic.
+3. For the teammate's newly created signup Free Tier account, review the console's eligible instance types and credit estimate before launching. AWS currently lists `t3.small` (2 GiB RAM) and x86-64 `c7i-flex.large` / `m7i-flex.large` among eligible types for accounts created on or after July 15, 2025. A `t3.small` is an initial staging candidate; select final capacity only after testing the expected event burst, with larger eligible types considered if required. These types consume credits; eligibility does not promise unlimited free operation. The earlier `t3.medium` candidate must not be assumed eligible. Start with an encrypted 30 GiB gp3 root volume and monitor free space. Review burst-credit charges/limits and actual traffic. See [AWS EC2 Free Tier](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-free-tier-usage.html).
 4. For this first direct-Nginx setup, the instance needs a public subnet, an internet-gateway route and an Elastic IP. Associate the Elastic IP; an ordinary public address can change after stop/start. Record ongoing public IPv4 charges.
 5. Security group: inbound 80/443 from the internet for HTTP certificate validation/HTTPS; SSH 22 only from your current IP temporarily if needed. Never expose 8000 or 6379 publicly. Do not add IPv6 ingress/DNS until IPv6 is actually configured.
 6. Attach an instance profile. Use `AmazonSSMManagedInstanceCore` for Systems Manager. Add least-privilege permissions for the specific environment's secret, SQS queue, ECR pull, log streams and custom metrics. Add KMS decrypt only for the keys actually needed. No AdministratorAccess or static AWS keys on the host.
@@ -156,7 +158,7 @@ Run in the indicated directories:
 
 | Directory | Commands |
 | --- | --- |
-| `frontend` | `npm ci`, `npm test`, `npm run lint`, `VITE_API_URL=https://api-staging.livingthrcharge.org VITE_GA4_ENABLED=false npm run build` |
+| `frontend` | `npm ci`, `npm test`, `npm run lint`, `VITE_API_URL=https://api-staging.livingthecharge.org VITE_GA4_ENABLED=false npm run build` |
 | `backend` | `npm ci`, `npm run typecheck`, `npm test` |
 | `infra` | `npm ci`, `npm run typecheck`, `npm test` |
 
@@ -209,8 +211,8 @@ Create the Secrets Manager JSON locally through its console/editor. Do not paste
 | `APP_ENV` | `staging`; production explicitly `production` |
 | `PORT` | `8000` |
 | `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | All from the same confirmed environment project |
-| `FRONTEND_URL` | `https://staging.livingthrcharge.org`; production canonical HTTPS website |
-| `AUTH_REDIRECT_URL` | `https://staging.livingthrcharge.org/set-password`; corresponding production path |
+| `FRONTEND_URL` | `https://staging.livingthecharge.org`; production canonical HTTPS website |
+| `AUTH_REDIRECT_URL` | `https://staging.livingthecharge.org/set-password`; corresponding production path |
 | `CORS_ORIGINS` | Exact website HTTPS origin; add `www` only if it actually serves the app |
 | `REDIS_URL` | `redis://redis:6379/0` for the staging Compose network; private `rediss://...` for production |
 | `TRUST_PROXY_HOPS` | `1` for Nginx directly in front of API; reassess when adding ALB/proxies |
@@ -374,7 +376,7 @@ Create `/etc/nginx/sites-available/ltc-api` for staging:
 ```nginx
 server {
     listen 80;
-    server_name api-staging.livingthrcharge.org;
+    server_name api-staging.livingthecharge.org;
     client_max_body_size 25m;
 
     location / {
@@ -405,7 +407,7 @@ Install Certbot via the [official Nginx instructions](https://certbot.eff.org/in
 
 ```bash
 sudo snap install --classic certbot
-sudo /snap/bin/certbot --nginx -d api-staging.livingthrcharge.org
+sudo /snap/bin/certbot --nginx -d api-staging.livingthecharge.org
 sudo /snap/bin/certbot renew --dry-run
 sudo nginx -t
 ```
@@ -414,13 +416,13 @@ Select HTTP-to-HTTPS redirect. Verify the renewal timer and certificate expiry m
 
 Avoid access-log formats containing query strings or authorization values: recovery/submission/unsubscribe URLs may carry tokens. Use normalized routes where possible and restrict logs containing path tokens. Public uptime checks should use `/api/health` or `/api/ready`, never credential-bearing URLs.
 
-**Checkpoint:** `https://api-staging.livingthrcharge.org/api/ready` returns JSON/200 with valid TLS; port 8000 is unreachable publicly; HTTP redirects to HTTPS; certificate renewal works; approved CORS preflight succeeds and an unrelated origin is rejected.
+**Checkpoint:** `https://api-staging.livingthecharge.org/api/ready` returns JSON/200 with valid TLS; port 8000 is unreachable publicly; HTTP redirects to HTTPS; certificate renewal works; approved CORS preflight succeeds and an unrelated origin is rejected.
 
 ## 11. Create globally delivered static hosting
 
 In AWS Console, create a staging S3 bucket with all public access blocked, versioning, encryption and retention of previous assets. Do **not** enable the S3 website endpoint. Create CloudFront using the regular S3 bucket origin and Origin Access Control (OAC); apply the distribution-scoped bucket policy AWS provides.
 
-Request an ACM certificate in **us-east-1** for `staging.livingthrcharge.org`, validate its CNAME through authoritative DNS, and attach that alias/certificate to CloudFront. Later create the production distribution/certificate for apex and `www` if both will be supported.
+Request an ACM certificate in **us-east-1** for `staging.livingthecharge.org`, validate its CNAME through authoritative DNS, and attach that alias/certificate to CloudFront. Later create the production distribution/certificate for apex and `www` if both will be supported.
 
 Configure HTTPS redirect and compression. Default HTML/client-route behavior should disable caching or revalidate; `assets/*` should use optimized caching. Public images may cache, but give non-fingerprinted files a bounded TTL and invalidate those changed paths deliberately. Never cache authenticated API responses through the static distribution.
 
@@ -479,11 +481,11 @@ If using both apex and www, choose a canonical hostname. Initially both may serv
 Verify from outside EC2:
 
 ```bash
-dig NS livingthrcharge.org
-dig api-staging.livingthrcharge.org
-dig staging.livingthrcharge.org
-curl -I https://staging.livingthrcharge.org
-curl --fail https://api-staging.livingthrcharge.org/api/ready
+dig NS livingthecharge.org
+dig api-staging.livingthecharge.org
+dig staging.livingthecharge.org
+curl -I https://staging.livingthecharge.org
+curl --fail https://api-staging.livingthecharge.org/api/ready
 ```
 
 During production cutover repeat for apex, www if configured, and api. Reduce affected records' TTL in advance where supported, wait out the old TTL, and retain old targets. DNS changes are not instantaneous or a substitute for backward-compatible releases.
@@ -498,7 +500,7 @@ Run only against verified TEST; record commit, role, expected/actual behavior, r
 | Auth | Login, disabled users, roles, direct API permissions, refresh/logout, invitation/recovery expiry and actual HTTPS redirect emails. |
 | Public site | Existing text/photos/crops/fonts/layout and forms preserved; mission/about aliases, deep links and token routes work. Missing assets/API paths never return successful HTML. |
 | Stripe | Sandbox one-time/monthly checkout, cancel/expiry/pending, duplicate/out-of-order webhooks, failed installments, partial/full refunds, accurate ledger/privacy. |
-| Webhook | Destination is `https://api-staging.livingthrcharge.org/api/stripe/webhook/`; raw body/signature survives proxy; destination secret matches this environment. Subscribe to the exact events handled by source. |
+| Webhook | Destination is `https://api-staging.livingthecharge.org/api/stripe/webhook/`; raw body/signature survives proxy; destination secret matches this environment. Subscribe to the exact events handled by source. |
 | Email | Controlled recipients, correct verified sender, unsubscribe/suppression, frozen newsletters, retry and unknown-outcome handling. Do not equate provider acceptance with inbox delivery. |
 | Queue/worker | Real SQS delivery, permissions, lease/visibility behavior, forced restart recovery, duplicate delivery, DLQ and deliberate redrive after reconciliation. |
 | Redis | API readiness, distributed limits if using multiple APIs, outage behavior, counter survival expectations and no public Redis port. |

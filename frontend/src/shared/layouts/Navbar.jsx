@@ -82,7 +82,7 @@ export default function Navbar() {
             letterSpacing: '-0.01em',
           }} aria-label="Living the Charge Home">
             <img 
-              src="/images/nobglogo.png" 
+              src={hasLightNav ? '/brand/ltc-logo-navy.svg' : '/brand/ltc-logo-white.svg'}
               alt="" 
               style={{ width: '42px', height: '42px', objectFit: 'contain' }} 
             />

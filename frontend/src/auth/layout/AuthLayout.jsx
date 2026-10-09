@@ -59,7 +59,7 @@ export default function AuthLayout({ children, footer = 'Living the Charge · In
     <div ref={pageRef} className="auth-page grain-overlay">
       <AuthCard footer={footer}>
         <div className="auth-brand">
-          <img className="auth-brand__logo" src="/images/nobglogo.png" alt="Living the Charge" />
+          <img className="auth-brand__logo" src="/brand/ltc-logo-navy.svg" alt="Living the Charge" width="512" height="512" />
         </div>
         {children}
       </AuthCard>

@@ -26,7 +26,7 @@ export default function Unsubscribe() {
       <div style={{ maxWidth: '460px', width: '100%', textAlign: 'center' }}>
         {/* Logo */}
         <img
-          src="https://res.cloudinary.com/dteql91nj/image/upload/v1784011541/logo_v52jvx.webp"
+          src="/brand/ltc-logo-white.svg"
           alt="Living the Charge"
           style={{ width: '72px', height: '72px', objectFit: 'contain', marginBottom: '2rem', display: 'block', margin: '0 auto 2rem' }}
         />

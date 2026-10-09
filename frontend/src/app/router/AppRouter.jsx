@@ -1,26 +1,30 @@
 import RouteErrorBoundary from './RouteErrorBoundary';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { adminRoutes } from './adminRoutes';
 import { authRoutes } from './authRoutes';
 import { portalRoutes } from './portalRoutes';
 import { getPublicRoutes } from './publicRoutes';
+import AppLoadingScreen from '../../shared/components/feedback/AppLoadingScreen';
 
 export default function AppRouter() {
+  const [isPreparing, setIsPreparing] = useState(true);
+  useEffect(() => {
+    const openingTimer = window.setTimeout(() => setIsPreparing(false), 1000);
+    return () => window.clearTimeout(openingTimer);
+  }, []);
+
   const routes = [...getPublicRoutes(), ...authRoutes, ...adminRoutes, ...portalRoutes];
   return (
-    <RouteErrorBoundary><Suspense fallback={<AppLoadingScreen />}>
-      <Routes>{routes.map(renderRoute)}</Routes>
-    </Suspense></RouteErrorBoundary>
+    <RouteErrorBoundary>
+      {isPreparing && <AppLoadingScreen />}
+      <div className="app-route-content" hidden={isPreparing}>
+        <Suspense fallback={isPreparing ? null : <AppLoadingScreen />}>
+          <Routes>{routes.map(renderRoute)}</Routes>
+        </Suspense>
+      </div>
+    </RouteErrorBoundary>
   );
-}
-
-function AppLoadingScreen() {
-  return <div className="app-loading-screen" role="status" aria-live="polite">
-    <div className="app-loading-screen__mark" aria-hidden="true">LTC</div>
-    <strong>Living the Charge</strong>
-    <span>Preparing your experience...</span>
-  </div>;
 }
 
 function renderRoute(route) {

@@ -72,6 +72,14 @@ body {
   overflow-x: hidden;
 }
 
+.app-route-content {
+  display: contents;
+}
+
+.app-route-content[hidden] {
+  display: none;
+}
+
 .app-loading-screen {
   min-height: 100vh;
   min-height: 100dvh;
@@ -87,17 +95,33 @@ body {
 }
 
 .app-loading-screen__mark {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  margin-bottom: 8px;
-  border: 1px solid rgba(212, 169, 106, .55);
-  border-radius: 50%;
-  color: var(--color-secondary);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .12em;
+  width: 112px;
+  height: 112px;
+  margin-bottom: 16px;
+}
+
+.app-loading-screen__logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: appLogoReveal 1000ms cubic-bezier(.2, .7, .2, 1) both,
+    appLogoBreathe 2400ms ease-in-out 1000ms infinite;
+}
+
+.app-loading-screen__progress {
+  width: 64px;
+  height: 2px;
+  margin-top: 16px;
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+.app-loading-screen__signal {
+  width: 40%;
+  height: 100%;
+  background: var(--color-secondary);
+  animation: appLoadingSweep 1800ms ease-in-out infinite;
 }
 
 .app-loading-screen strong {
@@ -115,6 +139,33 @@ body {
 @keyframes appLoadingFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes appLogoReveal {
+  from { opacity: 0; clip-path: inset(100% 0 0); transform: translateY(6px); }
+  to { opacity: 1; clip-path: inset(0); transform: translateY(0); }
+}
+
+@keyframes appLogoBreathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .72; }
+}
+
+@keyframes appLoadingSweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(350%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-loading-screen,
+  .app-loading-screen__logo,
+  .app-loading-screen__signal {
+    animation: none;
+  }
+
+  .app-loading-screen__signal {
+    margin-inline: auto;
+  }
 }
 
 #root {

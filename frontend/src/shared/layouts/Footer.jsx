@@ -28,7 +28,7 @@ export default function Footer() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
               <img 
-                src="/images/nobglogo.png" 
+                src="/brand/ltc-logo-white.svg"
                 alt="Living the Charge Logo" 
                 style={{ width: '100px', height: '100px', objectFit: 'contain' }} 
               />

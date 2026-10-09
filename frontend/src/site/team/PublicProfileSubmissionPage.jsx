@@ -243,7 +243,7 @@ function PublicProfileShell({ children }) {
   return (
     <main className="profile-public-page">
       <div className="profile-public-brand">
-        <img src="/images/nobglogo.png" alt="Living the Charge" />
+        <img src="/brand/ltc-logo-white.svg" alt="Living the Charge" width="512" height="512" />
         <span>Living the Charge</span>
       </div>
       <div className="profile-public-card">{children}</div>

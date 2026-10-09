@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../app/providers/AuthProvider';
+import AppLoadingScreen from '../../shared/components/feedback/AppLoadingScreen';
 
 const LoginPage = lazy(() => import('../../auth/login/LoginPage'));
 const ForgotPasswordPage = lazy(() => import('../../auth/forgot-password/ForgotPasswordPage'));
@@ -16,6 +17,6 @@ export const authRoutes = [
 
 function AdminLoginRoute() {
   const { isAuthenticated, isLoading } = useAuth();
-  if (isLoading) return <div className="app-loading-screen" role="status" aria-live="polite"><div className="app-loading-screen__mark" aria-hidden="true">LTC</div><strong>Living the Charge</strong><span>Checking your session...</span></div>;
+  if (isLoading) return <AppLoadingScreen message="Checking your session..." />;
   return isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <LoginPage />;
 }

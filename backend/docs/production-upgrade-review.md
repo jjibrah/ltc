@@ -1,12 +1,14 @@
-# Production Node compatibility upgrade — awaiting approval
+# Production Node compatibility upgrade — owner reports applied and verified
 
 Target: **PRODUCTION** Supabase project **dhfkysaazacblcazicom**, database **postgres**. The owner supplied the project's schema export; this review makes no live connection. Confirm this exact project in the Supabase SQL editor before any owner execution. The database name `postgres` does not identify a Supabase project by itself.
 
 Exact SQL: [20261007_062_production_node_upgrade.sql](../migrations/20261007_062_production_node_upgrade.sql).
 SHA-256: **8b0e20da4f797b705c950ec306df553ae1b217ed21ced58888c3e4cd434b54d9**.
-Approval: **not granted**. Execution: **not performed**. This file is not included in startup, tests, CI, workers, Docker, CDK or the TEST execution helper.
+Status update, 8 October 2026: the owner confirmed that the reviewed Node compatibility upgrade was **applied and verified** on this PRODUCTION target. This records the owner's report; the agent did not execute SQL, inspect the live database or independently recheck the verification results. Execution time, backup/recovery record and SQL-editor output were not supplied in this update. Do not replay this upgrade. Any additional schema change still requires its own exact SQL/checksum/target approval. This file is not included in startup, tests, CI, workers, Docker, CDK or the TEST execution helper.
 
 ## Evidence and comparison
+
+The comparison below describes the supplied **pre-upgrade** schema snapshot. It is historical evidence, not the current production state. The owner's applied-and-verified confirmation supersedes the earlier awaiting-approval execution status without certifying application/provider acceptance.
 
 Source: `backend/scripts/liveschema.json`, captured 2026-10-07 05:31:43 UTC, PostgreSQL 17.6, database postgres. Source SHA-256: `37de8dacc9ee1926d155d5a894faeaeee8ca53138f7d50d18c7920960caab5d9`. Metadata exports are not backups and do not prove current row states, external Auth settings, worker state or project identity independently.
 
